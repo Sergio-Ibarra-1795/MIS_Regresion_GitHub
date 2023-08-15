@@ -1,0 +1,20 @@
+---
+title: "Regresion_Class_15_August_Mod_Lineal_simple"
+author: "Sergibar"
+date: "2023-08-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Modelo lineal simple 
+
+$$ \hat\beta _{estimada} = \frac{n\sum_{i=1}^{n}xi*yi-\sum_{i=1}^{n}xi\sum_{i=1}^{n}yi}{n \sum_{i=1}^{n}xi - (\sum_{i=1}^{n}xi)^2} $$
+
+
+```{r}
+
+```
+

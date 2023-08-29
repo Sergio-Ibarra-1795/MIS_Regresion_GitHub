@@ -249,3 +249,48 @@ summary(lm_model_rosas_signifcativos)
 
 
 
+
+## Ejemplo 1 de VARIABLES dicotomicas 
+
+```{r}
+library(readxl)
+
+df_dicotomicas <- read_excel("Regresion_Class_29_August_Modelo_Lineal_Simple_ejemplo1.xls", 
+                 sheet = "Sheet1")
+df_dicotomicas
+```
+
+
+
+```{r}
+
+
+# Fit linear model
+lm_model_dicotomica <- lm(Y ~ X1+X2+X3+X4+X5, data = df_dicotomicas)
+
+# View model summary
+summary(lm_model_dicotomica)
+
+```
+
+
+PARA ELIMINAR EL INTERCEPTO DEL MODELO LINEAL 
+```{r}
+# Fit linear model
+lm_model_dicotomica_sin_intercepto <- lm(Y ~. +0, data = df_dicotomicas)
+
+# View model summary
+summary(lm_model_dicotomica_sin_intercepto)
+```
+
+
+Tomando solo en cuenta la X2
+
+```{r}
+# Fit linear model
+lm_model_dicotomica2 <- lm(Y ~ X2+X5, data = df_dicotomicas)
+
+# View model summary
+summary(lm_model_dicotomica2)
+```
+

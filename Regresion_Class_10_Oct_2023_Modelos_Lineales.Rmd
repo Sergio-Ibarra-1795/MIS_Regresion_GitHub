@@ -1,0 +1,296 @@
+---
+title: "Regresion_Class_10_Oct_2023_Modelos_Lineales"
+author: "Sergibar"
+date: "2023-08-29"
+output: html_document
+---
+
+# Aplicación de modelos lineales 
+
+## GPA
+
+```{r}
+library(readr)
+
+df_gpa <- read_csv("gpa1RMEv1.csv")
+df_gpa
+```
+
+
+## Roses y la inclusión de una variable en el tiempo 
+
+```{r}
+library(readxl)
+
+df_rosas <- read_excel("Regresion_Class_29_August_Modelo_Lineal_Simple_ejemplo_rosas.xls", 
+                 sheet = "Sheet1")
+df_rosas
+```
+
+
+
+# Modelo Lineal Simple 
+
+## Ejemplo 2: Precio de acción en función de tamaño de la empresa 
+
+```{r}
+library(readxl)
+
+df_ejemplo2_precio_acci <- read_excel("Regresion_Class_29_August_Modelo_Lineal_Simple_ejemplo2.xlsx", 
+                 sheet = "Sheet1")
+df_ejemplo2_precio_acci
+```
+
+### Renombrando las columnas de Ejemplo 2: Precio de acción en función de tamaño de la empresa 
+
+```{r}
+# Rename columns
+colnames(df_ejemplo2_precio_acci) <- c("TAMANIO", "PPA")
+
+# View new column names 
+colnames(df_ejemplo2_precio_acci)
+```
+
+
+```{r}
+df_ejemplo2_precio_acci$TAMANIO
+```
+
+
+
+
+
+### Aplicaición de modelo lineal a Ejemplo 2: Precio de acción en función de tamaño de la empresa 
+
+
+```{r}
+# Load libraries
+library(stats)
+
+# Fit linear model 
+lm_model_precio_acci <- lm(PPA ~ TAMANIO, data = df_ejemplo2_precio_acci)
+
+# View model summary
+summary(lm_model_precio_acci)
+```
+
+
+### Minimos cuadrados ordinarios aplicando que Beta estimada es igual al inveros de X por X trasnpuesta por X transpuerta por el vector Y 
+
+
+#### Necesitamos constuir la matroz de diseño o matriz ampliada que considera a la columna de 1 para incluir a Betha 1 que es la intercepción. 
+
+
+#### Matriz de diseño 
+
+```{r}
+unos <- rep(1, times=12)
+unos
+```
+
+
+
+```{r}
+Matriz_disenio <- rep(NA, times=24)
+
+Matriz_disenio 
+```
+
+
+```{r}
+dim(Matriz_disenio)<- c(12, 2)
+
+```
+
+
+```{r}
+Matriz_disenio 
+```
+
+Para incluir los unos en la primer columna 
+
+```{r}
+Matriz_disenio[,1]<- unos
+Matriz_disenio 
+```
+
+
+Para incluir los valores de las variables X
+
+```{r}
+Matriz_disenio[,2]<- df_ejemplo2_precio_acci$TAMANIO
+Matriz_disenio
+
+```
+
+#### Calculo de betas como funcion de la matriz de diseño X y las variable y 
+
+La transpuesta de la matriz X
+```{r}
+betas <- t(Matriz_disenio)
+betas
+```
+
+La transpuesta de la matriz X por X 
+
+```{r}
+betas <- t(Matriz_disenio)%*%Matriz_disenio
+betas
+```
+
+
+
+La inversa de La transpuesta de la matriz X por X 
+
+```{r}
+betas <- solve(t(Matriz_disenio)%*%Matriz_disenio)
+betas
+```
+
+
+
+
+La inversa de La transpuesta de la matriz X por X por la matriz incersa de x por y
+
+```{r}
+betas <- solve(t(Matriz_disenio)%*%Matriz_disenio)%*%t(Matriz_disenio)%*%df_ejemplo2_precio_acci$PPA
+betas
+```
+
+
+#### Grafica de Precio por acción cmo función de tamanio
+
+```{r}
+plot(df_ejemplo2_precio_acci$TAMANIO,df_ejemplo2_precio_acci$PPA )
+abline(lm_model_precio_acci, col="blue")
+```
+
+
+
+
+# Modelo Lineal Multiple
+
+## Roses y la inclusión de una variable en el tiempo 
+
+```{r}
+library(readxl)
+
+df_rosas <- read_excel("Regresion_Class_29_August_Modelo_Lineal_Simple_ejemplo_rosas.xls", 
+                 sheet = "Sheet1")
+df_rosas
+```
+
+Quitando la primer columna 
+
+```{r}
+df_rosas <-df_rosas[,-1] 
+df_rosas
+```
+
+Aplicando el modelo linel multipli a la data de rosas 
+
+```{r}
+# Load libraries
+library(stats)
+
+# Fit linear model
+lm_model_rosas <- lm(Y ~ X2+X3+X4+X5, data = df_rosas)
+
+# View model summary
+summary(lm_model_rosas)
+```
+
+
+```{r}
+
+# Load libraries
+library(stats)
+
+# Fit linear model
+lm_model_rosas <- lm(Y ~., data = df_rosas)
+
+# View model summary
+summary(lm_model_rosas)
+```
+
+Para graficar la Y como variable de X5 como una especie de tendencia 
+
+```{r}
+plot(df_rosas$X5, df_rosas$Y)
+```
+
+
+Si solo tomaramos en cuenta a X5 como variable explicativa el valor de X5 es aún más negativo, aunque no considero todas las variables 
+```{r}
+# Load libraries
+library(stats)
+
+# Fit linear model
+lm_model_rosas_solo_x5 <- lm(Y ~ X5, data = df_rosas)
+
+# View model summary
+summary(lm_model_rosas_solo_x5)
+
+```
+
+Para dejar de considerar las variables X3 y X4 como varles independientes
+
+```{r}
+
+# Fit linear model
+lm_model_rosas_signifcativos <- lm(Y ~ X2+X5, data = df_rosas)
+
+# View model summary
+summary(lm_model_rosas_signifcativos)
+
+```
+
+
+
+
+
+
+## Ejemplo 1 de VARIABLES dicotomicas 
+
+```{r}
+library(readxl)
+
+df_dicotomicas <- read_excel("Regresion_Class_29_August_Modelo_Lineal_Simple_ejemplo1.xls", 
+                 sheet = "Sheet1")
+df_dicotomicas
+```
+
+
+
+```{r}
+
+
+# Fit linear model
+lm_model_dicotomica <- lm(Y ~ X1+X2+X3+X4+X5, data = df_dicotomicas)
+
+# View model summary
+summary(lm_model_dicotomica)
+
+```
+
+
+PARA ELIMINAR EL INTERCEPTO DEL MODELO LINEAL 
+```{r}
+# Fit linear model
+lm_model_dicotomica_sin_intercepto <- lm(Y ~. +0, data = df_dicotomicas)
+
+# View model summary
+summary(lm_model_dicotomica_sin_intercepto)
+```
+
+
+Tomando solo en cuenta la X2
+
+```{r}
+# Fit linear model
+lm_model_dicotomica2 <- lm(Y ~ X2+X5, data = df_dicotomicas)
+
+# View model summary
+summary(lm_model_dicotomica2)
+```
+

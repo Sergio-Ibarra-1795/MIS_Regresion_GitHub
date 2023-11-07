@@ -1,0 +1,137 @@
+---
+title: "Regresion_Class_07_Nov_2023_Modelos_Lineales"
+author: "Sergibar"
+date: "2023-11-07"
+output: html_document
+---
+
+# Aplicación de DATOS PANEL (los efectos aleatorios y efectos fijos)
+
+## Panel Princeton Data
+
+```{r}
+citation('foreign')
+```
+
+### Se lee la data en el objeto Panel 
+
+```{r}
+library(foreign)
+Panel <- read.dta("http://dss.princeton.edu/training/Panel101.dta")
+head(Panel)
+```
+
+
+```{r}
+typeof(Panel)
+```
+
+
+
+### Para presentar mejor la data 
+
+```{r}
+knitr::kable(Panel)
+
+```
+
+
+```{r}
+library(tidyverse)
+
+Panel%>% select(country, year, x1)%>%group_by(country)%>%summarise(media=mean(x1))
+```
+
+
+```{r figura_media_por_pais, fig.align='center'}
+library(tidyverse)
+
+Panel%>% select(country, year, x1)%>%group_by(country)%>%summarise(media=mean(x1))%>%ggplot(aes(x=country, y=media))+geom_col()
+
+```
+
+
+
+### Efectos fijos del error 
+
+
+```{r}
+
+mco<- lm(y~ x1, data=Panel)
+summary(mco)
+
+```
+
+### Renombrando las columnas de Ejemplo 2: Precio de acción en función de tamaño de la empresa 
+
+
+
+```{r}
+fixed.dum <-lm(y~x1 + factor(country)+0, data=Panel)
+summary(fixed.dum)
+```
+
+
+
+```{r}
+library(carData)
+library(car)
+yhat<- fixed.dum$fitted.values
+scatterplot(yhat~Panel$x1)
+
+```
+
+
+
+## Panel Model
+
+
+### Efectos fijos 
+
+```{r}
+
+install.packages('plm')
+library(rbibutils)
+library(plm)
+
+efectos_fijos <- plm(y~x1, data=Panel, index=c('country', 'year'), model='within')
+summary(efectos_fijos)
+```
+
+
+
+
+### Efectos aleatorios  
+
+```{r}
+library(plm)
+efectos_aleatorios <- plm(y~x1, data=Panel, index=c('country', 'year'), model='random')
+
+summary(efectos_fijos)
+```
+
+
+
+
+### Prueba de Haussman
+
+```{r}
+phtest(efectos_fijos, efectos_aleatorios)
+
+```
+
+
+
+### Efectos en series de tiempo 
+
+```{r}
+library(plm)
+efectos_tiempo <- plm(y~x1, data=Panel, index=c('country', 'year'), model='pooling')
+
+summary(efectos_tiempo)
+```
+
+
+
+
+

@@ -14,11 +14,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Alumno: Ibarra Ramírez Sergio 
 <br>
 
-### Ejemplo de aplicación de modelos Lineales Generalizados Multipes (GMLR Ó MCG) en el pronóstico de sueldos
+### Ejemplo de aplicación de modelos Lineales Generalizados (GLR Ó MCG) en el pronóstico de sueldos
 
 <br>
 
-#### El modelo General Lineal o Modelo Generalizado de Mínimos Cuadrados 
+#### El modelo General Lineal (GLR) o Modelo de Mínimos Cuadrados (MCG) GeneralizadoS 
 <br>
 
 En general el modelo MCG asume los siguientes enunciados como ciertos:
@@ -86,7 +86,33 @@ $${\Omega}= \begin{pmatrix}
 \end{pmatrix}$$
 
 
+Y donde los estimadores ${\beta}$ del modelo lineal genralizado (GLS o MCG) puede ser calculado como : 
+
+$$\begin{aligned}
+\widehat{\boldsymbol{\beta}_{GLS}} = \left( \mathbf{X}^\top \mathbf{\Omega}^{-1}  \mathbf{X}\right)^{-1} \mathbf{X}^\top \mathbf{\Omega}^{-1}  \mathbf{Y}
+\end{aligned}$$
+
+Y cuya función de minimización de error o función de costo a minimizar como función de los estimadores del modelo GLS es:
+
+$$\left( \mathbf{Y} - \mathbf{X} \boldsymbol{\beta} \right)^\top \mathbf{\Omega}^{-1} \left( \mathbf{Y} - \mathbf{X} \boldsymbol{\beta} \right) \rightarrow \min_{\boldsymbol{\beta}}$$
+
+
 <br>
+
+#### La prueba estadística F(Fisher) para evaluación de valor general constante para todos los elementos del vecotr ${\beta}$
+
+Donde la H0: El vector ${\beta}$ es igual a un valor determinado para todos sus elementos, por ejemplo ${\beta}=r$ donde r=0
+
+$$\begin{cases}
+H_0&: \mathbf{L} \boldsymbol{\beta} = \boldsymbol{r}\\
+H_1&: \mathbf{L} \boldsymbol{\beta} \neq \boldsymbol{r}
+\end{cases}$$
+
+
+Donde se asume que ambos errores Error explicado por el modelo/Error no explicado por el modelo (error estocástico) siguen una distribución X
+
+
+$$F = \dfrac{ \left( \mathbf{L} \widehat{\boldsymbol{\beta}}_{GLS} - \boldsymbol{r} \right)^\top\left( \mathbf{X}^\top \mathbf{\Omega}^{-1} \mathbf{X}  \right)^{-1} \mathbf{L}^\top \right]^{-1} \left( \mathbf{L} \widehat{\boldsymbol{\beta}}_{GLS} - \boldsymbol{r} \right)}{M\widehat{\sigma}^2}  \sim F_{(M, N - (k+1))} $$
 
 
 #### El modelo General Lineal Simple o Modelo de Mínimos Cuadrados Ordinarios 
@@ -117,8 +143,6 @@ $\sigma^2I$ is the variance of the normal distribution, where I is the identity 
 Y  por lo tanto: 
 
 $$E(Y |X) = \mu(X) = \mathbf{X}^\top\boldsymbol{\beta}$$
-
-
 
 
 

@@ -9,10 +9,41 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Ejemplo de aplicación de modelos Lineales Generalizados Multipes (GMLR Ó MCG) en el pronóstico de sueldos
+### UNAM Posgrado en Ingeniería 
+### Dr. Wulfrano Gallardo G.
+### Alumno: Ibarra Ramírez Sergio 
+
+### Ejemplo de aplicación de modelos Lineales Generalizados Multipes (GMLR Ó MCG) en el pronóstico de sueldos
 
 
-Consideremos primero al modelo de regresión lineal simple o modelo de Mínimos Cuadrados Ordinarios (OMS ó MCO) como: 
+#### El modelo General Lineal o Modelo Generalizado de Mínimos Cuadrados 
+
+En general el modelo MCG asume los siguientes enunciados como ciertos:
+
+ A. Las variables xi predictoras son linealmente indpendientes entre si, por lo que la matriz X es de rango completo
+ B. Los errores siguen una distribución normal 
+ C. El valor esperado del error dado los valores de la matriz X es cero 
+ $$\mathbb{E} \left( \boldsymbol{\varepsilon} | \mathbf{X}\right) = \boldsymbol{0}$$
+ D. La varianza del error dado los valores de la matriz X puede calcularse como: 
+ 
+ $$\mathbb{V}{\rm ar}\left( \boldsymbol{\varepsilon} | \mathbf{X} \right)= \mathbb{E} \left( \boldsymbol{\varepsilon} \boldsymbol{\varepsilon}^\top \right)$$
+ es decir, 
+ 
+$$ \mathbb{V}{\rm ar}\left( \boldsymbol{\varepsilon} | \mathbf{X} \right) = \mathbb{E} \left( \boldsymbol{\varepsilon} \boldsymbol{\varepsilon}^\top \right)= \boldsymbol{\Sigma} = \sigma_\epsilon^2 \mathbf{\Omega}$$
+
+
+Donde ${\Omega}$ es una matriz cuadrada, simétrica y definida positiva de tamaño N × N. Este modelo permite que los errores sean heterocedásticos o autocorrelacionados (o ambos) y a menudo se denomina caso especial del modelo lineal generalizado (GLM).
+
+
+
+Si ${\Omega}=I$, entonces el GMLR es simplemente el modelo de regresión lineal múltiple simple que discutimos al comienzo de este capítulo.
+
+
+
+
+#### El modelo General Lineal Simple o Modelo de Mínimos Cuadrados Ordinarios 
+
+Consideremos al modelo de regresión lineal simple o modelo de Mínimos Cuadrados Ordinarios (OMS ó MCO) como: 
 
 $$\begin{align}
 \mathbf{Y} = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon}
@@ -38,9 +69,10 @@ $\sigma^2I$ is the variance of the normal distribution, where I is the identity 
 Y  por lo tanto: 
 
 $$E(Y |X) = \mu(X) = \mathbf{X}^\top\boldsymbol{\beta}$$
- <1>
- 
- 
 
 
-<1> https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/dff89368051a5feae72b39c6422d0752_MIT18_650F16_GLM.pdf
+
+
+
+
+https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/dff89368051a5feae72b39c6422d0752_MIT18_650F16_GLM.pdf

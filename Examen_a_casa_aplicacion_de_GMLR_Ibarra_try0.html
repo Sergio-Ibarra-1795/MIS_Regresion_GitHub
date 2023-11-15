@@ -360,38 +360,21 @@ display: none;
 <div id="unam-posgrado-en-ingeniería" class="section level3">
 <h3>UNAM Posgrado en Ingeniería</h3>
 </div>
-<div id="dr.-wulfrano-gallardo-g." class="section level3">
-<h3>Dr. Wulfrano Gallardo G.</h3>
+<div id="dr.-wulfrano-gomez-gallardo" class="section level3">
+<h3>Dr. Wulfrano Gomez Gallardo</h3>
 </div>
 <div id="alumno-ibarra-ramírez-sergio" class="section level3">
 <h3>Alumno: Ibarra Ramírez Sergio</h3>
+<p><br></p>
 </div>
 <div id="ejemplo-de-aplicación-de-modelos-lineales-generalizados-multipes-gmlr-ó-mcg-en-el-pronóstico-de-sueldos" class="section level3">
 <h3>Ejemplo de aplicación de modelos Lineales Generalizados Multipes
 (GMLR Ó MCG) en el pronóstico de sueldos</h3>
-<p>Consideremos primero al modelo de regresión lineal simple o modelo de
-Mínimos Cuadrados Ordinarios (OMS ó MCO) como:</p>
-<p><span class="math display">\[\begin{align}
-\mathbf{Y} = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon}
-\end{align}\]</span></p>
-<div id="donde" class="section level5">
-<h5>Donde: <br></h5>
-<p>Y: Vector de valores estimados <br> X: Matriz ampliada de valores de
-las variables independientes xi <br> <span class="math inline">\(\beta\)</span>: Vector de estimadores de maxima
-verosimilitud calculado con el modelo MCO</p>
-<p>El cual asume:</p>
-<p><span class="math display">\[Y |X \sim \operatorname{N}(\mu(X),
-\sigma^2I)\]</span></p>
-</div>
-<div id="donde-1" class="section level5">
-<h5>Donde: <br></h5>
-<p>Y: Vector de valores estimados <br> X: Matriz ampliada de valores de
-las variables independientes xi <br> <span class="math inline">\(\mu(X)\)</span> is the mean of the normal
-distribution, which is a function of X <br> <span class="math inline">\(\sigma^2I\)</span> is the variance of the normal
-distribution, where I is the identity matrix.</p>
-<p>Y por lo tanto:</p>
-<p><span class="math display">\[E(Y |X) = \mu(X) =
-\mathbf{X}^\top\boldsymbol{\beta}\]</span></p>
+<p><br></p>
+<div id="el-modelo-general-lineal-o-modelo-generalizado-de-mínimos-cuadrados" class="section level4">
+<h4>El modelo General Lineal o Modelo Generalizado de Mínimos
+Cuadrados</h4>
+<p><br></p>
 <p>En general el modelo MCG asume los siguientes enunciados como
 ciertos:</p>
 <p>A. Las variables xi predictoras son linealmente indpendientes entre
@@ -414,7 +397,79 @@ cuadrada, simétrica y definida positiva de tamaño N × N. Este modelo
 permite que los errores sean heterocedásticos o autocorrelacionados (o
 ambos) y a menudo se denomina caso especial del modelo lineal
 generalizado (GLM).</p>
+<p>Si <span class="math inline">\({\Omega}=I\)</span>, entonces el GMLR
+es simplemente el modelo de regresión lineal múltiple simple que
+discutimos al comienzo de este capítulo.</p>
+<p><span class="math display">\[ {\Omega}= \begin{pmatrix}
+1 &amp; 0 &amp; 0 &amp; ..  0\\
+0 &amp;  1&amp; 0 &amp; ..  0\\
+0 &amp;  0&amp; 1 &amp; ..  0\\
+0 &amp; 0 &amp; 0 &amp;  ..  1
+\end{pmatrix}\]</span></p>
+<p>Si <span class="math inline">\({\Omega}\)</span> es diagonal con
+elementos diagonales no constantes, entonces los términos de error no
+están correlacionados pero son heterocedásticos.</p>
+<p><span class="math display">\[{\Omega}= \begin{pmatrix}
+\omega_{1}  &amp; 0 &amp; 0 &amp; ..  0\\
+0 &amp;  \omega_{2}&amp; 0 &amp; ..  0\\
+0 &amp;  0&amp; \omega_{3} &amp; ..  0\\
+0 &amp; 0 &amp; 0 &amp;  ..  \omega_{n}
+\end{pmatrix}\]</span></p>
+<p>Si <span class="math inline">\({\Omega}\)</span> no es diagonal,
+entonces <span class="math inline">\(Cov(\varepsilon_{i},
+\varepsilon_{j})={\Omega_{ij}\neq 0}\)</span> En econometría, las
+matrices de covarianza no diagonales se encuentran con mayor frecuencia
+en los datos de series temporales, con correlaciones más altas para las
+observaciones más cercanas en el tiempo (generalmente cuando i y j
+difieren en 1 o 2).</p>
+<p>Si <span class="math inline">\({\Omega}\)</span> no es diagonal y los
+elementos diagonales son constantes, entonces los errores están
+autocorrelacionados y homocedásticos.</p>
+<p><span class="math display">\[{\Omega}= \begin{pmatrix}
+\sigma^{2}  &amp; \rho_{12} &amp; \rho_{13} &amp; ..\rho_{1N}\\
+\rho_{21}  &amp;  \sigma^{2}&amp; \rho_{23}  &amp; ..\rho_{2N} \\
+\rho_{31}  &amp;  \rho_{32} &amp; \sigma^{2} &amp; ..\rho_{3N} \\
+\rho_{41}  &amp;  \rho_{42}  &amp; \rho_{43}  &amp;  ..\sigma^{2}
+\end{pmatrix}\]</span></p>
+<p>Si <span class="math inline">\({\Omega}\)</span> no es diagonal y los
+elementos diagonales no son constantes, entonces los errores están
+autocorrelacionados y heterocedásticos.</p>
+<p><span class="math display">\[{\Omega}= \begin{pmatrix}
+\omega_{1}  &amp; \rho_{12} &amp; \rho_{13} &amp; ..\rho_{1N}\\
+\rho_{21}  &amp;  \omega_{2}&amp; \rho_{23}  &amp; ..\rho_{2N} \\
+\rho_{31}  &amp;  \rho_{32} &amp; \omega_{3} &amp; ..\rho_{3N} \\
+\rho_{41}  &amp;  \rho_{42}  &amp; \rho_{43}  &amp;  ..\omega_{N}
+\end{pmatrix}\]</span></p>
+<p><br></p>
+</div>
+<div id="el-modelo-general-lineal-simple-o-modelo-de-mínimos-cuadrados-ordinarios" class="section level4">
+<h4>El modelo General Lineal Simple o Modelo de Mínimos Cuadrados
+Ordinarios</h4>
+<p>Consideremos al modelo de regresión lineal simple o modelo de Mínimos
+Cuadrados Ordinarios (OMS ó MCO) como:</p>
+<p><span class="math display">\[\begin{align}
+\mathbf{Y} = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon}
+\end{align}\]</span></p>
+<div id="donde" class="section level5">
+<h5>Donde: <br></h5>
+<p>Y: Vector de valores estimados <br> X: Matriz ampliada de valores de
+las variables independientes xi <br> <span class="math inline">\(\beta\)</span>: Vector de estimadores de maxima
+verosimilitud calculado con el modelo MCO</p>
+<p>El cual asume:</p>
+<p><span class="math display">\[Y |X \sim \operatorname{N}(\mu(X),
+\sigma^2I)\]</span></p>
+</div>
+<div id="donde-1" class="section level5">
+<h5>Donde: <br></h5>
+<p>Y: Vector de valores estimados <br> X: Matriz ampliada de valores de
+las variables independientes xi <br> <span class="math inline">\(\mu(X)\)</span> is the mean of the normal
+distribution, which is a function of X <br> <span class="math inline">\(\sigma^2I\)</span> is the variance of the normal
+distribution, where I is the identity matrix.</p>
+<p>Y por lo tanto:</p>
+<p><span class="math display">\[E(Y |X) = \mu(X) =
+\mathbf{X}^\top\boldsymbol{\beta}\]</span></p>
 <p><a href="https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/dff89368051a5feae72b39c6422d0752_MIT18_650F16_GLM.pdf" class="uri">https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/dff89368051a5feae72b39c6422d0752_MIT18_650F16_GLM.pdf</a></p>
+</div>
 </div>
 </div>
 

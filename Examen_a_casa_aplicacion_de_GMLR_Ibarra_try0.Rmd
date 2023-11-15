@@ -10,13 +10,16 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ### UNAM Posgrado en Ingeniería 
-### Dr. Wulfrano Gallardo G.
+### Dr. Wulfrano Gomez Gallardo
 ### Alumno: Ibarra Ramírez Sergio 
+<br>
 
 ### Ejemplo de aplicación de modelos Lineales Generalizados Multipes (GMLR Ó MCG) en el pronóstico de sueldos
 
+<br>
 
 #### El modelo General Lineal o Modelo Generalizado de Mínimos Cuadrados 
+<br>
 
 En general el modelo MCG asume los siguientes enunciados como ciertos:
 
@@ -39,6 +42,51 @@ Donde ${\Omega}$ es una matriz cuadrada, simétrica y definida positiva de tama�
 Si ${\Omega}=I$, entonces el GMLR es simplemente el modelo de regresión lineal múltiple simple que discutimos al comienzo de este capítulo.
 
 
+$$ {\Omega}= \begin{pmatrix}
+1 & 0 & 0 & ..  0\\ 
+0 &  1& 0 & ..  0\\
+0 &  0& 1 & ..  0\\ 
+0 & 0 & 0 &  ..  1 
+\end{pmatrix}$$ 
+
+
+Si ${\Omega}$ es diagonal con elementos diagonales no constantes, entonces los términos de error no están correlacionados pero son heterocedásticos.
+
+
+$${\Omega}= \begin{pmatrix}
+\omega_{1}  & 0 & 0 & ..  0\\ 
+0 &  \omega_{2}& 0 & ..  0\\
+0 &  0& \omega_{3} & ..  0\\ 
+0 & 0 & 0 &  ..  \omega_{n} 
+\end{pmatrix}$$
+
+
+Si ${\Omega}$ no es diagonal, entonces $Cov(\varepsilon_{i}, \varepsilon_{j})={\Omega_{ij}\neq 0}$ En econometría, las matrices de covarianza no diagonales se encuentran con mayor frecuencia en los datos de series temporales, con correlaciones más altas para las observaciones más cercanas en el tiempo (generalmente cuando i y j difieren en 1 o 2).
+
+
+Si ${\Omega}$ no es diagonal y los elementos diagonales son constantes, entonces los errores están autocorrelacionados y homocedásticos.
+
+$${\Omega}= \begin{pmatrix}
+\sigma^{2}  & \rho_{12} & \rho_{13} & ..\rho_{1N}\\ 
+\rho_{21}  &  \sigma^{2}& \rho_{23}  & ..\rho_{2N} \\
+\rho_{31}  &  \rho_{32} & \sigma^{2} & ..\rho_{3N} \\ 
+\rho_{41}  &  \rho_{42}  & \rho_{43}  &  ..\sigma^{2} 
+\end{pmatrix}$$
+
+
+
+Si ${\Omega}$ no es diagonal y los elementos diagonales no son constantes, entonces los errores están autocorrelacionados y heterocedásticos.
+
+
+$${\Omega}= \begin{pmatrix}
+\omega_{1}  & \rho_{12} & \rho_{13} & ..\rho_{1N}\\ 
+\rho_{21}  &  \omega_{2}& \rho_{23}  & ..\rho_{2N} \\
+\rho_{31}  &  \rho_{32} & \omega_{3} & ..\rho_{3N} \\ 
+\rho_{41}  &  \rho_{42}  & \rho_{43}  &  ..\omega_{N} 
+\end{pmatrix}$$
+
+
+<br>
 
 
 #### El modelo General Lineal Simple o Modelo de Mínimos Cuadrados Ordinarios 

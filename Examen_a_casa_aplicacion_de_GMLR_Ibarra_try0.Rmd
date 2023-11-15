@@ -1,0 +1,46 @@
+---
+title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try0"
+author: "SIR"
+date: "2023-11-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Ejemplo de aplicación de modelos Lineales Generalizados Multipes (GMLR Ó MCG) en el pronóstico de sueldos
+
+
+Consideremos primero al modelo de regresión lineal simple o modelo de Mínimos Cuadrados Ordinarios (OMS ó MCO) como: 
+
+$$\begin{align}
+\mathbf{Y} = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon}
+\end{align}$$
+
+
+##### Donde: <br>
+Y: Vector de valores estimados <br>
+X: Matriz ampliada de valores de las variables independientes xi <br>
+$\beta$: Vector de estimadores de maxima verosimilitud calculado con el modelo MCO 
+
+
+El cual asume: 
+
+$$Y |X \sim \operatorname{N}(\mu(X), \sigma^2I)$$ 
+
+##### Donde: <br>
+Y: Vector de valores estimados <br>
+X: Matriz ampliada de valores de las variables independientes xi <br>
+$\mu(X)$ is the mean of the normal distribution, which is a function of X  <br>
+$\sigma^2I$ is the variance of the normal distribution, where I is the identity matrix.
+
+Y  por lo tanto: 
+
+$$E(Y |X) = \mu(X) = \mathbf{X}^\top\boldsymbol{\beta}$$
+ <1>
+ 
+ 
+
+
+<1> https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/dff89368051a5feae72b39c6422d0752_MIT18_650F16_GLM.pdf

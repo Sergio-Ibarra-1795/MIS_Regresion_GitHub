@@ -130,7 +130,7 @@ Si $\gamma_{j}$ es el j-esimo coeficiente diagonal de la matriz  $\left ( X^{T} 
 
 Entonces el valor de t estadistico de prueba para cada $\beta_{j}$ es: 
 
-$$t=\frac{\widehat\beta_{j} - \beta_{j} }{\sqrt{\sigma^{2} \gamma_{j}}}$$
+$$t_{n-k}=\frac{\widehat\beta_{j} - \beta_{j} }{\sqrt{\sigma^{2} \gamma_{j}}}$$
 
 
 
@@ -166,6 +166,70 @@ $\sigma^2I$ is the variance of the normal distribution, where I is the identity 
 Y  por lo tanto: 
 
 $$E(Y |X) = \mu(X) = \mathbf{X}^\top\boldsymbol{\beta}$$
+
+
+
+### Ejemplo de aplicación de GLM 
+
+
+
+```{r}
+
+library(lmtest)
+library(lrmest)
+library(tseries)
+library(nortest)
+##library(car)
+library(sandwich)
+library(lattice)
+library(viridisLite)
+library(leaps)
+
+```
+
+
+#### Importación y lectura de la data para el modelo GLM
+
+```{r}
+
+wage_source <- "http://www.principlesofeconometrics.com/poe5/data/csv/cps5_small.csv"
+wage_data <- read.csv(file = wage_source, sep = ",", dec = ".", header = TRUE)
+print(head(wage_data, 10))
+
+```
+
+
+Definiciones de variables:
+
+black - = 1 si es negro
+educ - años de educación
+exper - experiencia potencial = edad - educación - 6
+faminc - otros ingresos familiares, $
+female - = 1 si es mujer
+metro - = 1 si se encuentra en un área metropolitana
+midwest - = 1 si es región del medio oeste
+south - = 1 si es región sur
+wage - ingresos por hora, $
+west - = 1 si es región oeste
+
+
+
+Tengamos un vistazo rápido  de los datos con un reumen estadístico de las variables 
+
+```{r}
+print(summary(wage_data))
+```
+
+
+#### División de la data en train & test
+
+```{r}
+
+dt_index <- 1:nrow(wage_data)
+print(head(dt_index, 5))
+
+```
+
 
 
 

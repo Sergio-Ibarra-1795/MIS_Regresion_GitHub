@@ -498,8 +498,8 @@ H_1&amp;: \boldsymbol{\beta_{j}} \neq \boldsymbol{r}
 coeficiente diagonal de la matriz <span class="math inline">\(\left (
 X^{T} X \right )^{-1}\)</span> y <span class="math inline">\(\gamma_{j}&gt;0\)</span></p>
 <p>Entonces el valor de t estadistico de prueba para cada <span class="math inline">\(\beta_{j}\)</span> es:</p>
-<p><span class="math display">\[t=\frac{\widehat\beta_{j} - \beta_{j}
-}{\sqrt{\sigma^{2} \gamma_{j}}}\]</span></p>
+<p><span class="math display">\[t_{n-k}=\frac{\widehat\beta_{j} -
+\beta_{j} }{\sqrt{\sigma^{2} \gamma_{j}}}\]</span></p>
 <p><br></p>
 </div>
 <div id="el-modelo-general-lineal-simple-o-modelo-de-mínimos-cuadrados-ordinarios" class="section level4">
@@ -528,10 +528,88 @@ distribution, where I is the identity matrix.</p>
 <p>Y por lo tanto:</p>
 <p><span class="math display">\[E(Y |X) = \mu(X) =
 \mathbf{X}^\top\boldsymbol{\beta}\]</span></p>
+</div>
+</div>
+</div>
+<div id="ejemplo-de-aplicación-de-glm" class="section level3">
+<h3>Ejemplo de aplicación de GLM</h3>
+<pre class="r"><code>library(lmtest)</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>library(lrmest)</code></pre>
+<pre><code>## Warning: package &#39;lrmest&#39; was built under R version 4.2.3</code></pre>
+<pre class="r"><code>library(tseries)</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;quantmod&#39;:
+##   method            from
+##   as.zoo.data.frame zoo</code></pre>
+<pre class="r"><code>library(nortest)
+##library(car)
+library(sandwich)</code></pre>
+<pre><code>## Warning: package &#39;sandwich&#39; was built under R version 4.2.3</code></pre>
+<pre class="r"><code>library(lattice)
+library(viridisLite)
+library(leaps)</code></pre>
+<pre><code>## Warning: package &#39;leaps&#39; was built under R version 4.2.3</code></pre>
+<div id="importación-y-lectura-de-la-data-para-el-modelo-glm" class="section level4">
+<h4>Importación y lectura de la data para el modelo GLM</h4>
+<pre class="r"><code>wage_source &lt;- &quot;http://www.principlesofeconometrics.com/poe5/data/csv/cps5_small.csv&quot;
+wage_data &lt;- read.csv(file = wage_source, sep = &quot;,&quot;, dec = &quot;.&quot;, header = TRUE)
+print(head(wage_data, 10))</code></pre>
+<pre><code>##    black educ exper faminc female metro midwest south  wage west
+## 1      0   13    45      0      1     1       0     0 44.44    1
+## 2      0   14    25  45351      1     1       1     0 16.00    0
+## 3      0   18    27  91946      1     1       0     0 15.38    0
+## 4      0   13    42  48370      0     1       1     0 13.54    0
+## 5      0   13    41  10000      1     1       0     0 25.00    1
+## 6      0   16    26 151308      1     1       0     0 24.05    0
+## 7      0   16    11 110461      1     1       0     1 40.95    0
+## 8      0   18    15      0      1     1       1     0 26.45    0
+## 9      0   21    32  67084      0     1       1     0 30.76    0
+## 10     0   14    12  14000      0     0       0     0 34.57    1</code></pre>
+<p>Definiciones de variables:</p>
+<p>black - = 1 si es negro educ - años de educación exper - experiencia
+potencial = edad - educación - 6 faminc - otros ingresos familiares, $
+female - = 1 si es mujer metro - = 1 si se encuentra en un área
+metropolitana midwest - = 1 si es región del medio oeste south - = 1 si
+es región sur wage - ingresos por hora, $ west - = 1 si es región
+oeste</p>
+<p>Tengamos un vistazo rápido de los datos con un reumen estadístico de
+las variables</p>
+<pre class="r"><code>print(summary(wage_data))</code></pre>
+<pre><code>##      black             educ          exper           faminc      
+##  Min.   :0.0000   Min.   : 0.0   Min.   : 0.00   Min.   :     0  
+##  1st Qu.:0.0000   1st Qu.:12.0   1st Qu.:12.00   1st Qu.:     0  
+##  Median :0.0000   Median :14.0   Median :24.00   Median : 23679  
+##  Mean   :0.0875   Mean   :14.2   Mean   :23.37   Mean   : 35304  
+##  3rd Qu.:0.0000   3rd Qu.:16.0   3rd Qu.:34.00   3rd Qu.: 53029  
+##  Max.   :1.0000   Max.   :21.0   Max.   :62.00   Max.   :469000  
+##      female         metro           midwest           south      
+##  Min.   :0.00   Min.   :0.0000   Min.   :0.0000   Min.   :0.000  
+##  1st Qu.:0.00   1st Qu.:1.0000   1st Qu.:0.0000   1st Qu.:0.000  
+##  Median :0.00   Median :1.0000   Median :0.0000   Median :0.000  
+##  Mean   :0.44   Mean   :0.8217   Mean   :0.2475   Mean   :0.325  
+##  3rd Qu.:1.00   3rd Qu.:1.0000   3rd Qu.:0.0000   3rd Qu.:1.000  
+##  Max.   :1.00   Max.   :1.0000   Max.   :1.0000   Max.   :1.000  
+##       wage             west       
+##  Min.   :  3.94   Min.   :0.0000  
+##  1st Qu.: 13.00   1st Qu.:0.0000  
+##  Median : 19.30   Median :0.0000  
+##  Mean   : 23.64   Mean   :0.2525  
+##  3rd Qu.: 29.80   3rd Qu.:1.0000  
+##  Max.   :221.10   Max.   :1.0000</code></pre>
+</div>
+<div id="división-de-la-data-en-train-test" class="section level4">
+<h4>División de la data en train &amp; test</h4>
+<pre class="r"><code>dt_index &lt;- 1:nrow(wage_data)
+print(head(dt_index, 5))</code></pre>
+<pre><code>## [1] 1 2 3 4 5</code></pre>
 <p><a href="https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/2c0395a301a2ca798b1c0ee18cf6eedc_MIT18_650F16_Regression.pdf" class="uri">https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/2c0395a301a2ca798b1c0ee18cf6eedc_MIT18_650F16_Regression.pdf</a></p>
 <p><a href="https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/dff89368051a5feae72b39c6422d0752_MIT18_650F16_GLM.pdf" class="uri">https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/dff89368051a5feae72b39c6422d0752_MIT18_650F16_GLM.pdf</a></p>
 <p><a href="https://web.vu.lt/mif/a.buteikis/wp-content/uploads/PE_Book/4-6-Multiple-GLS.html" class="uri">https://web.vu.lt/mif/a.buteikis/wp-content/uploads/PE_Book/4-6-Multiple-GLS.html</a></p>
-</div>
 </div>
 </div>
 

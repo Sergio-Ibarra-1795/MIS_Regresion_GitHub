@@ -320,13 +320,121 @@ summary(olm_model_wage_train_data)
 
 Según el modelo estimado, se observa lo siguiente:
 
-Los coeficientes son los esperados para las variables "educ", "exper" y sus valores al cuadrado.
-El coeficiente de la variable "metro" también es el esperado.
-Los coeficientes regionales son negativos y no significativos para las variables "oeste" y "medio oeste", lo que indica que las regiones en sí mismas (dado que solo una de ellas es significativa) podrían no ser indicativas de diferentes salarios. Por otro lado, es posible que las personas que trabajan en la región "sur" ganen significativamente menos que las personas en todas las demás regiones (otras + oeste + medio oeste), sin embargo, solo podemos verificar esto si eliminamos las variables regionales restantes y solo dejamos la variable "sur".
+Los coeficientes son los esperados para las variables "educ", "exper":
+- Un año más de educación representa en promedio 2.54 más de ganancia 
+- Un año más de experiencia representa en promedio 0.19 más de ganancia 
+
+El coeficiente de la variable "metro" también es el esperado:
+- Vivir en un área metropolitana representa en promedio 3.48 más de ganancia con respecto a no vivir en un área metropolitana 
+
+
+Para los coeficientes regionales de las variables "west" y "midwest", dado que solo una de ellas es significativa o "linealmente independiente", el programa tomó solo una de ellas en la ecuación lineal del modelo MCO. 
+- Vivir en un área "west" o "midwest" representa en promedio 1.4 menos de ganancia con respecto a no vivir en un área "west" o "midwest"
+
+
+Para los coeficientes regionales de la variable "south"
+- Vivir en un área "south" representa en promedio 1.22 menos de ganancia con respecto a no vivir en un área "south"
+
+
 El signo del coeficiente de la variable "female" es negativo y significativo, lo que indica una posible discriminación en la fuerza laboral (cabe recalcar que este es solo el modelo inicial, por lo que aún no podemos estar seguros).
-El signo del coeficiente de la variable "black" es negativo, pero no es significativo, lo que indica que no hay discriminación racial según la muestra de datos.
+- Ser "Female" representa en promedio 5.7 menos de ganancia con respecto a no ser "Female"
 
 
+El signo del coeficiente de la variable "black" es negativo, pero no tan grande como Female
+- Ser "Black" representa en promedio 1.14 menos de ganancia con respecto a no ser "Black"
+
+
+
+Queremos probar por separado la hipótesis de que cada coeficiente sea significativo a través de la prueba t de student que se presentó arriba
+
+
+$$\begin{cases}
+H_0&: \boldsymbol{\beta_{j}} = \boldsymbol{r}\\
+H_1&: \boldsymbol{\beta_{j}} \neq \boldsymbol{r}
+\end{cases}$$
+
+
+```{r}
+print(round(coef(summary(olm_model_wage_train_data)), 4))
+```
+
+
+Comencemos por remover las variables cuyos coeficientes p en la prueba t sean mayores a 0.05, en este caso son (black, midwest y south)
+
+
+```{r}
+# Load libraries
+library(stats)
+
+# Fit linear model
+olm_model2_wage_train_data <- lm(wage ~ educ+exper+faminc+female+metro, data = wage_train_data)
+
+# View model summary
+summary(olm_model2_wage_train_data)
+```
+
+
+#### Evaluación del error del modelo MCO
+
+
+```{r}
+# Define the plot layout matrix:
+layout_mat <- matrix(c(1, 1, 2, 2, 3, 3, 3, 3), 
+                     nrow = 2, byrow = TRUE)
+# print(layout_mat)
+layout(layout_mat)
+plot(olm_model2_wage_train_data$fitted.values, olm_model2_wage_train_data$residuals, type = "p", 
+     pch = 21, bg = "cornflowerblue", main = "Residuals vs Fitted", 
+     ylab = "residuals", xlab = "fitted values", cex = 1.5)
+hist(olm_model2_wage_train_data$residuals, col = "cornflowerblue", 
+     breaks = 30, main = "Residual Histogram")
+qqnorm(olm_model2_wage_train_data$residuals, main = "Q-Q plot of residuals", 
+       pch = 21, bg = "cornflowerblue", cex = 1.5)
+qqline(olm_model2_wage_train_data$residuals, col = "red", lwd = 2)
+```
+
+
+##### Test de Homocedasticidad de errores( Breusch-Pagan Test)
+
+$$\begin{cases}
+H_0&: \text{residuals are homoskedastic}\\
+H_1&: \text{residuals are heteroskedastic}
+\end{cases}$$
+
+
+```{r}
+# Breusch–Pagan Test
+
+print(lmtest::bptest(olm_model2_wage_train_data))
+```
+
+
+En este caso el valor de p< 0.05, por lo tanto rechazamos la hipótesis nula de que los residuos son homocedásticos. Esto significa que los residuos son heterocedásticos.
+
+
+
+
+
+##### Test de Autocorrelación de errores(Durbin-Watson Test)
+
+$$\begin{cases}
+H_0&:\text{the errors are serially uncorrelated}\\
+H_1&:\text{the errors are autocorrelated (the exact order of the autocorrelation depends on the test carried out)}
+\end{cases}$$
+
+
+
+```{r}
+
+# Durbin–Watson Test
+print(lmtest::dwtest(olm_model2_wage_train_data, alternative = "two.sided"))
+
+```
+
+
+
+
+## Bibliografía 
 
 
 https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/2c0395a301a2ca798b1c0ee18cf6eedc_MIT18_650F16_Regression.pdf

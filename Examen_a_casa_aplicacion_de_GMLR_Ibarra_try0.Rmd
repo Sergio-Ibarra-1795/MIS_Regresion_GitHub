@@ -25,6 +25,7 @@ En general el modelo MCG asume los siguientes enunciados como ciertos:
 
  A. Las variables xi predictoras son linealmente indpendientes entre si, por lo que la matriz X es de rango completo
  B. Los errores siguen una distribución normal 
+ $${\varepsilon}\sim N(\mathbf{0}, \sigma^2\mathbf{I}_n)$$
  C. El valor esperado del error dado los valores de la matriz X es cero 
  $$\mathbb{E} \left( \boldsymbol{\varepsilon} | \mathbf{X}\right) = \boldsymbol{0}$$
  D. La varianza del error dado los valores de la matriz X puede calcularse como: 
@@ -104,15 +105,37 @@ $$\left( \mathbf{Y} - \mathbf{X} \boldsymbol{\beta} \right)^\top \mathbf{\Omega}
 Donde la H0: El vector ${\beta}$ es igual a un valor determinado para todos sus elementos, por ejemplo ${\beta}=r$ donde r=0
 
 $$\begin{cases}
-H_0&: \mathbf{L} \boldsymbol{\beta} = \boldsymbol{r}\\
-H_1&: \mathbf{L} \boldsymbol{\beta} \neq \boldsymbol{r}
+H_0&: \boldsymbol{\beta} = \boldsymbol{r}\\
+H_1&: \boldsymbol{\beta} \neq \boldsymbol{r}
 \end{cases}$$
 
 
-Donde se asume que ambos errores Error explicado por el modelo/Error no explicado por el modelo (error estocástico) siguen una distribución X
+Donde se asume que ambos errores a) Error explicado por el modelo con k grados de libertad / b) Error no explicado por el modelo (error estocástico) con n-k grados de libertad siguen una distribución t de student para una determinada muestra y por lo tanto, el cociente de ambas cantidades pueden intepretarse como un estadístico F de fisher con K,N-K grados de libertado: 
 
 
-$$F = \dfrac{ \left( \mathbf{L} \widehat{\boldsymbol{\beta}}_{GLS} - \boldsymbol{r} \right)^\top\left( \mathbf{X}^\top \mathbf{\Omega}^{-1} \mathbf{X}  \right)^{-1} \mathbf{L}^\top \right]^{-1} \left( \mathbf{L} \widehat{\boldsymbol{\beta}}_{GLS} - \boldsymbol{r} \right)}{M\widehat{\sigma}^2}  \sim F_{(M, N - (k+1))} $$
+$$F = \dfrac{ \left(\widehat{\boldsymbol{\beta}}_{GLS} - \boldsymbol{r} \right)^\top \left[\left( \mathbf{X}^\top \mathbf{\Omega}^{-1} \mathbf{X}  \right)\right]^{-1} \left( \widehat{\boldsymbol{\beta}}_{GLS} - \boldsymbol{r} \right)}{\widehat{\epsilon}^2}  \sim F_{(K, N - K)} $$
+
+#### Las pruebas estadística T(student) para evaluación de valor individual de cada  elemento del vecotr ${\beta}$
+
+Donde la H0: El i-esimo elemento del vector ${\beta}$ es igual a un valor determinado , por ejemplo ${\beta_{i}}=r$ donde puede ser cero r=0 ç
+
+
+$$\begin{cases}
+H_0&: \boldsymbol{\beta_{j}} = \boldsymbol{r}\\
+H_1&: \boldsymbol{\beta_{j}} \neq \boldsymbol{r}
+\end{cases}$$
+
+
+Si $\gamma_{j}$ es el j-esimo coeficiente diagonal de la matriz  $\left ( X^{T} X \right )^{-1}$ y $\gamma_{j}>0$
+
+Entonces el valor de t estadistico de prueba para cada $\beta_{j}$ es: 
+
+$$t=\frac{\widehat\beta_{j} - \beta_{j} }{\sqrt{\sigma^{2} \gamma_{j}}}$$
+
+
+
+
+<br>
 
 
 #### El modelo General Lineal Simple o Modelo de Mínimos Cuadrados Ordinarios 
@@ -147,4 +170,10 @@ $$E(Y |X) = \mu(X) = \mathbf{X}^\top\boldsymbol{\beta}$$
 
 
 
+https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/2c0395a301a2ca798b1c0ee18cf6eedc_MIT18_650F16_Regression.pdf
+
 https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/dff89368051a5feae72b39c6422d0752_MIT18_650F16_GLM.pdf
+
+https://web.vu.lt/mif/a.buteikis/wp-content/uploads/PE_Book/4-6-Multiple-GLS.html
+
+

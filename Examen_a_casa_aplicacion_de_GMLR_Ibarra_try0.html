@@ -299,17 +299,23 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+content: "";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "\e258";
-font-family: 'Glyphicons Halflings';
+content: "";
 border: none;
+}
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "";
+font-family: 'Glyphicons Halflings';
+display: inline-block;
+padding: 10px;
+border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -367,23 +373,23 @@ display: none;
 <h3>Alumno: Ibarra Ramírez Sergio</h3>
 <p><br></p>
 </div>
-<div id="ejemplo-de-aplicación-de-modelos-lineales-generalizados-multipes-gmlr-ó-mcg-en-el-pronóstico-de-sueldos" class="section level3">
-<h3>Ejemplo de aplicación de modelos Lineales Generalizados Multipes
-(GMLR Ó MCG) en el pronóstico de sueldos</h3>
+<div id="ejemplo-de-aplicación-de-modelos-lineales-generalizados-glr-ó-mcg-en-el-pronóstico-de-sueldos" class="section level3">
+<h3>Ejemplo de aplicación de modelos Lineales Generalizados (GLR Ó MCG)
+en el pronóstico de sueldos</h3>
 <p><br></p>
-<div id="el-modelo-general-lineal-o-modelo-generalizado-de-mínimos-cuadrados" class="section level4">
-<h4>El modelo General Lineal o Modelo Generalizado de Mínimos
-Cuadrados</h4>
+<div id="el-modelo-general-lineal-glr-o-modelo-de-mínimos-cuadrados-mcg-generalizados" class="section level4">
+<h4>El modelo General Lineal (GLR) o Modelo de Mínimos Cuadrados (MCG)
+GeneralizadoS</h4>
 <p><br></p>
 <p>En general el modelo MCG asume los siguientes enunciados como
 ciertos:</p>
 <p>A. Las variables xi predictoras son linealmente indpendientes entre
 si, por lo que la matriz X es de rango completo B. Los errores siguen
-una distribución normal C. El valor esperado del error dado los valores
-de la matriz X es cero <span class="math display">\[\mathbb{E} \left(
-\boldsymbol{\varepsilon} | \mathbf{X}\right) = \boldsymbol{0}\]</span>
-D. La varianza del error dado los valores de la matriz X puede
-calcularse como:</p>
+una distribución normal <span class="math display">\[{\varepsilon}\sim
+N(\mathbf{0}, \sigma^2\mathbf{I}_n)\]</span> C. El valor esperado del
+error dado los valores de la matriz X es cero <span class="math display">\[\mathbb{E} \left( \boldsymbol{\varepsilon} |
+\mathbf{X}\right) = \boldsymbol{0}\]</span> D. La varianza del error
+dado los valores de la matriz X puede calcularse como:</p>
 <p><span class="math display">\[\mathbb{V}{\rm ar}\left(
 \boldsymbol{\varepsilon} | \mathbf{X} \right)= \mathbb{E} \left(
 \boldsymbol{\varepsilon} \boldsymbol{\varepsilon}^\top \right)\]</span>
@@ -440,6 +446,60 @@ autocorrelacionados y heterocedásticos.</p>
 \rho_{31}  &amp;  \rho_{32} &amp; \omega_{3} &amp; ..\rho_{3N} \\
 \rho_{41}  &amp;  \rho_{42}  &amp; \rho_{43}  &amp;  ..\omega_{N}
 \end{pmatrix}\]</span></p>
+<p>Y donde los estimadores <span class="math inline">\({\beta}\)</span>
+del modelo lineal genralizado (GLS o MCG) puede ser calculado como :</p>
+<p><span class="math display">\[\begin{aligned}
+\widehat{\boldsymbol{\beta}_{GLS}} = \left( \mathbf{X}^\top
+\mathbf{\Omega}^{-1}  \mathbf{X}\right)^{-1} \mathbf{X}^\top
+\mathbf{\Omega}^{-1}  \mathbf{Y}
+\end{aligned}\]</span></p>
+<p>Y cuya función de minimización de error o función de costo a
+minimizar como función de los estimadores del modelo GLS es:</p>
+<p><span class="math display">\[\left( \mathbf{Y} - \mathbf{X}
+\boldsymbol{\beta} \right)^\top \mathbf{\Omega}^{-1} \left( \mathbf{Y} -
+\mathbf{X} \boldsymbol{\beta} \right) \rightarrow
+\min_{\boldsymbol{\beta}}\]</span></p>
+<p><br></p>
+</div>
+<div id="la-prueba-estadística-ffisher-para-evaluación-de-valor-general-constante-para-todos-los-elementos-del-vecotr-beta" class="section level4">
+<h4>La prueba estadística F(Fisher) para evaluación de valor general
+constante para todos los elementos del vecotr <span class="math inline">\({\beta}\)</span></h4>
+<p>Donde la H0: El vector <span class="math inline">\({\beta}\)</span>
+es igual a un valor determinado para todos sus elementos, por ejemplo
+<span class="math inline">\({\beta}=r\)</span> donde r=0</p>
+<p><span class="math display">\[\begin{cases}
+H_0&amp;: \boldsymbol{\beta} = \boldsymbol{r}\\
+H_1&amp;: \boldsymbol{\beta} \neq \boldsymbol{r}
+\end{cases}\]</span></p>
+<p>Donde se asume que ambos errores a) Error explicado por el modelo con
+k grados de libertad / b) Error no explicado por el modelo (error
+estocástico) con n-k grados de libertad siguen una distribución t de
+student para una determinada muestra y por lo tanto, el cociente de
+ambas cantidades pueden intepretarse como un estadístico F de fisher con
+K,N-K grados de libertado:</p>
+<p><span class="math display">\[F = \dfrac{
+\left(\widehat{\boldsymbol{\beta}}_{GLS} - \boldsymbol{r} \right)^\top
+\left[\left( \mathbf{X}^\top \mathbf{\Omega}^{-1}
+\mathbf{X}  \right)\right]^{-1} \left(
+\widehat{\boldsymbol{\beta}}_{GLS} - \boldsymbol{r}
+\right)}{\widehat{\epsilon}^2}  \sim F_{(K, N - K)} \]</span></p>
+</div>
+<div id="las-pruebas-estadística-tstudent-para-evaluación-de-valor-individual-de-cada-elemento-del-vecotr-beta" class="section level4">
+<h4>Las pruebas estadística T(student) para evaluación de valor
+individual de cada elemento del vecotr <span class="math inline">\({\beta}\)</span></h4>
+<p>Donde la H0: El i-esimo elemento del vector <span class="math inline">\({\beta}\)</span> es igual a un valor determinado ,
+por ejemplo <span class="math inline">\({\beta_{i}}=r\)</span> donde
+puede ser cero r=0 ç</p>
+<p><span class="math display">\[\begin{cases}
+H_0&amp;: \boldsymbol{\beta_{j}} = \boldsymbol{r}\\
+H_1&amp;: \boldsymbol{\beta_{j}} \neq \boldsymbol{r}
+\end{cases}\]</span></p>
+<p>Si <span class="math inline">\(\gamma_{j}\)</span> es el j-esimo
+coeficiente diagonal de la matriz <span class="math inline">\(\left (
+X^{T} X \right )^{-1}\)</span> y <span class="math inline">\(\gamma_{j}&gt;0\)</span></p>
+<p>Entonces el valor de t estadistico de prueba para cada <span class="math inline">\(\beta_{j}\)</span> es:</p>
+<p><span class="math display">\[t=\frac{\widehat\beta_{j} - \beta_{j}
+}{\sqrt{\sigma^{2} \gamma_{j}}}\]</span></p>
 <p><br></p>
 </div>
 <div id="el-modelo-general-lineal-simple-o-modelo-de-mínimos-cuadrados-ordinarios" class="section level4">
@@ -468,7 +528,9 @@ distribution, where I is the identity matrix.</p>
 <p>Y por lo tanto:</p>
 <p><span class="math display">\[E(Y |X) = \mu(X) =
 \mathbf{X}^\top\boldsymbol{\beta}\]</span></p>
+<p><a href="https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/2c0395a301a2ca798b1c0ee18cf6eedc_MIT18_650F16_Regression.pdf" class="uri">https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/2c0395a301a2ca798b1c0ee18cf6eedc_MIT18_650F16_Regression.pdf</a></p>
 <p><a href="https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/dff89368051a5feae72b39c6422d0752_MIT18_650F16_GLM.pdf" class="uri">https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/dff89368051a5feae72b39c6422d0752_MIT18_650F16_GLM.pdf</a></p>
+<p><a href="https://web.vu.lt/mif/a.buteikis/wp-content/uploads/PE_Book/4-6-Multiple-GLS.html" class="uri">https://web.vu.lt/mif/a.buteikis/wp-content/uploads/PE_Book/4-6-Multiple-GLS.html</a></p>
 </div>
 </div>
 </div>

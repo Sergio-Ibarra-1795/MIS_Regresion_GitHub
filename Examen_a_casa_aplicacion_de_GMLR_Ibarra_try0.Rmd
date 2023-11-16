@@ -225,11 +225,106 @@ print(summary(wage_data))
 
 ```{r}
 
-dt_index <- 1:nrow(wage_data)
-print(head(dt_index, 5))
+# Set seed for reproducibility
+set.seed(123)
+
+# Create an index for splitting the data
+index <- sample(2, nrow(wage_data), replace = TRUE, prob = c(0.8, 0.2))
+
+# Split the data into training and test sets
+wage_train_data <- wage_data[index == 1, ]
+wage_test_data <- wage_data[index == 2, ]
+
+print(head(wage_test_data))
 
 ```
 
+
+####  A. Las variables xi predictoras son linealmente indpendientes entre si, por lo que la matriz X es de rango completo
+
+
+```{r}
+panel.hist <- function(x, ...){
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(usr[1:2], 0, 1.5) )
+    h <- hist(x, plot = FALSE, breaks = 30)
+    breaks <- h$breaks; nB <- length(breaks)
+    y <- h$counts; y <- y/max(y)
+    rect(breaks[-nB], 0, breaks[-1], y, ...)
+}
+panel.abs_cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...){
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(0, 1, 0, 1))
+    r <- abs(cor(x, y, use = "complete.obs"))
+    txt <- format(c(r, 0.123456789), digits = digits)[1]
+    txt <- paste0(prefix, txt)
+    if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+    text(0.5, 0.5, txt, cex = 2)
+}
+```
+
+
+
+```{r}
+pairs(wage_train_data[, c('educ','exper', 'faminc', 'wage')],
+      diag.panel = panel.hist, 
+      lower.panel = panel.smooth, #upper.panel = panel.cor, 
+      col = "dodgerblue4", 
+      pch = 21, 
+      bg = adjustcolor("dodgerblue3", alpha = 0.2))
+```
+
+
+Los valores absolutos de la correlación son útiles para determinar la fuerza general de la relación lineal, independientemente de la dirección de la correlación.
+
+También podemos estar interesados en verificar el mapa de calor de la matriz de correlación por separado 
+
+
+```{r fig.width=8}
+myPanel <- function(x, y, z, ...){
+  lattice::panel.levelplot(x, y, round(z, 2), ...)  # Round the correlation values to two decimals
+  my_text <- ifelse(!is.na(z), paste0(round(z, 2)), "")
+  lattice::panel.text(x, y, my_text, cex = 0.8)  # Adjust the font size
+}
+# base colors: terrain.colors(), rainbow(), heat.colors(), topo.colors() or cm.colors()
+# Viridis: viridis, magma, inferno, plasma
+lattice::levelplot(cor(wage_train_data, use = "complete.obs"), panel = myPanel, 
+                   col.regions = viridisLite::viridis(100),
+  main =("Valor de Correlacion Lineal entre las variables Xi predictoras"), ylab = list(label = "Variables Xi predictoras"),
+                               xlab = list(label = "Variables Xi predictoras"), scales = list(x = list(rot = 90)))  #)  # Rotate the x-axis labels by 90 degrees
+
+```
+
+
+
+Observamos queObservamos que wage y educ tienen una correlación positiva. Esta es la correlación positiva más fuerte en el conjunto de datos.
+south, midwest y west parecen estar negativamente correlacionados, sin embargo, es lo que se espera - son variables indicadoras de la ubicación geográfica, por lo que una observación solo puede tener una de estas variables con un valor de 1
+1 a la vez.
+
+
+
+####  Aplicamos un modello lineal simple SLM o MCO a para encontrar el error y hacer las pruebas de las hipotesis planteadas como ciertas 
+
+
+
+```{r}
+# Load libraries
+library(stats)
+
+# Fit linear model
+olm_model_wage_train_data <- lm(wage ~ black+educ+exper+faminc+female+metro+midwest+south, data = wage_train_data)
+
+# View model summary
+summary(olm_model_wage_train_data)
+```
+
+Según el modelo estimado, se observa lo siguiente:
+
+Los coeficientes son los esperados para las variables "educ", "exper" y sus valores al cuadrado.
+El coeficiente de la variable "metro" también es el esperado.
+Los coeficientes regionales son negativos y no significativos para las variables "oeste" y "medio oeste", lo que indica que las regiones en sí mismas (dado que solo una de ellas es significativa) podrían no ser indicativas de diferentes salarios. Por otro lado, es posible que las personas que trabajan en la región "sur" ganen significativamente menos que las personas en todas las demás regiones (otras + oeste + medio oeste), sin embargo, solo podemos verificar esto si eliminamos las variables regionales restantes y solo dejamos la variable "sur".
+El signo del coeficiente de la variable "female" es negativo y significativo, lo que indica una posible discriminación en la fuerza laboral (cabe recalcar que este es solo el modelo inicial, por lo que aún no podemos estar seguros).
+El signo del coeficiente de la variable "black" es negativo, pero no es significativo, lo que indica que no hay discriminación racial según la muestra de datos.
 
 
 

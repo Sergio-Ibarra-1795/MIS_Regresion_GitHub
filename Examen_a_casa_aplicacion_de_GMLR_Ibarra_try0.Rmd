@@ -318,6 +318,9 @@ olm_model_wage_train_data <- lm(wage ~ black+educ+exper+faminc+female+metro+midw
 summary(olm_model_wage_train_data)
 ```
 
+####  Interpretación un modelo lineal simple SLM o MCO para pronóstico de salario con base en datos raciales, de genero y geográficos
+
+
 Según el modelo estimado, se observa lo siguiente:
 
 Los coeficientes son los esperados para las variables "educ", "exper":
@@ -344,6 +347,8 @@ El signo del coeficiente de la variable "black" es negativo, pero no tan grande 
 - Ser "Black" representa en promedio 1.14 menos de ganancia con respecto a no ser "Black"
 
 
+### Evaluación de las hipotesis que sustentan el modelo MCO
+
 
 Queremos probar por separado la hipótesis de que cada coeficiente sea significativo a través de la prueba t de student que se presentó arriba
 
@@ -358,6 +363,8 @@ H_1&: \boldsymbol{\beta_{j}} \neq \boldsymbol{r}
 print(round(coef(summary(olm_model_wage_train_data)), 4))
 ```
 
+
+### Modelo MCO2 (removiendo las variables que no resultaron significatrivas en el MCO original que incluía todas las variables predictoras xi del conjunto de datos como variables predictoras)
 
 Comencemos por remover las variables cuyos coeficientes p en la prueba t sean mayores a 0.05, en este caso son (black, midwest y south)
 
@@ -374,7 +381,7 @@ summary(olm_model2_wage_train_data)
 ```
 
 
-#### Evaluación del error del modelo MCO
+#### Evaluación general de los error del modelo MCO
 
 
 ```{r}
@@ -394,7 +401,7 @@ qqline(olm_model2_wage_train_data$residuals, col = "red", lwd = 2)
 ```
 
 
-##### Test de Homocedasticidad de errores( Breusch-Pagan Test)
+##### Test de Homocedasticidad de errores del modelo MCO ( Breusch-Pagan Test)
 
 $$\begin{cases}
 H_0&: \text{residuals are homoskedastic}\\
@@ -415,7 +422,7 @@ En este caso el valor de p< 0.05, por lo tanto rechazamos la hipótesis nula de 
 
 
 
-##### Test de Autocorrelación de errores(Durbin-Watson Test)
+##### Test de Autocorrelación de errores del modelo MCO (Durbin-Watson Test)
 
 $$\begin{cases}
 H_0&:\text{the errors are serially uncorrelated}\\
@@ -430,6 +437,84 @@ H_1&:\text{the errors are autocorrelated (the exact order of the autocorrelation
 print(lmtest::dwtest(olm_model2_wage_train_data, alternative = "two.sided"))
 
 ```
+
+
+El estadístico de DW está cerca de 2 (esto se puede verificar en R, ya que el valor p asociado es mayor a 0.05), por lo que no rechazamos la hipótesis nula de que no existe correlación serial.
+
+
+
+##### Test de Autocorrelación de Parcial errores del modelo MCO (PACF)
+
+
+```{r}
+pacf(olm_model2_wage_train_data$residuals)
+```
+
+Como podemos ver, no tenemos motivos para rechazar la hipótesis nula de autocorrelación en ninguno de los casos (excepto quizá para los errores a lag 20 y 27)
+
+A partir de estos resultados de la prueba, podemos concluir que los residuos no están autocorrelacionados
+
+
+
+##### Test de Normalidad de los errores del modelo MCO (Jarque-Bera)
+
+$$\begin{cases}
+H_0&:\text{residuals follow a normal distribution}\\
+H_1&:\text{residuals do not follow a normal distribution}
+\end{cases}$$
+
+
+```{r}
+ tseries::jarque.bera.test(olm_model2_wage_train_data$residuals)
+```
+
+
+A partir de estos resultados de la prueba, podemos decir que tenemos suficiente información para rechazar H0 y por lo tanto concluir que los residuos NO se distribuyen normalmente :(
+
+
+
+### Modelo MCO3 (removiendo las variables que no resultaron significatrivas en el MCO original que incluía todas las variables predictoras xi del conjunto de datos como variables predictoras + Logaritmo de variable dependiente wage como medida para lograr normalidad en error)
+
+Comencemos por remover las variables cuyos coeficientes p en la prueba t sean mayores a 0.05, en este caso son (black, midwest y south)
+
+
+```{r}
+# Load libraries
+library(stats)
+
+# Fit linear model
+olm_model3_wage_train_data <- lm(log(wage) ~ educ+exper+faminc+female+metro, data = wage_train_data)
+
+# View model summary
+summary(olm_model3_wage_train_data)
+```
+
+
+#### Evaluación general de los error del modelo MCO
+
+
+```{r}
+# Define the plot layout matrix:
+layout_mat <- matrix(c(1, 1, 2, 2, 3, 3, 3, 3), 
+                     nrow = 2, byrow = TRUE)
+# print(layout_mat)
+layout(layout_mat)
+plot(olm_model3_wage_train_data$fitted.values, olm_model3_wage_train_data$residuals, type = "p", 
+     pch = 21, bg = "cornflowerblue", main = "Residuals vs Fitted", 
+     ylab = "residuals", xlab = "fitted values", cex = 1.5)
+hist(olm_model3_wage_train_data$residuals, col = "cornflowerblue", 
+     breaks = 30, main = "Residual Histogram")
+qqnorm(olm_model3_wage_train_data$residuals, main = "Q-Q plot of residuals", 
+       pch = 21, bg = "cornflowerblue", cex = 1.5)
+qqline(olm_model3_wage_train_data$residuals, col = "red", lwd = 2)
+```
+
+
+
+```{r}
+ tseries::jarque.bera.test(olm_model3_wage_train_data$residuals)
+```
+
 
 
 

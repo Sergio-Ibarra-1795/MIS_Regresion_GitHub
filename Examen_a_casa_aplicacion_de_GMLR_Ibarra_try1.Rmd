@@ -1,5 +1,5 @@
 ---
-title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try0"
+title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try1"
 author: "SIR"
 date: "2023-11-15"
 output: html_document
@@ -303,7 +303,7 @@ south, midwest y west parecen estar negativamente correlacionados, sin embargo, 
 
 
 
-###  Modelo lineal simple SLM o MCO1 a para encontrar el error y hacer las pruebas de las hipotesis planteadas como ciertas para los modelos lineales
+### Modelo lineal simple SLM o MCO1 a para encontrar el error y hacer las pruebas de las hipotesis planteadas como ciertas para los modelos lineales
 
 
 ```{r}
@@ -316,7 +316,7 @@ olm_model_wage_train_data <- lm(wage ~ black+educ+exper+faminc+female+metro+midw
 # View model summary
 summary(olm_model_wage_train_data)
 ```
-El modelo resultante de aplicar MOC1 a la dara de wage fue: 
+El modelo resultante de aplicar MOC1 a la data de wage fue: 
 
 $$\begin{aligned}
 wage_i &= \beta_0 - \beta_1 black_i + \beta_2 educ_i + \beta_3 exper_i + \beta_4 faminc_i - \beta_5 female_i + \beta_6 metro_i - \beta_7 midwest_i - \beta_8 south_i ; 
@@ -326,7 +326,7 @@ wage_i &= \beta_0 - \beta_1 black_i + \beta_2 educ_i + \beta_3 exper_i + \beta_4
 
 ####  Interpretación un modelo lineal simple SLM o MCO para pronóstico de salario con base en datos raciales, de genero y geográficos
 
-Empezemos específicando el modelo resultante de aplicar el MCO a la dara de wage fomo función de las 9 variables preodictoas xi que componen el dataset. 
+Empezemos específicando el modelo resultante de aplicar el MCO a la data de wage como función de las 9-1 variables predictoas xi que componen el dataset original. 
 
 
 
@@ -379,7 +379,7 @@ print(round(coef(summary(olm_model_wage_train_data)), 4))
 
 ### Modelo MCO2 (removiendo las variables que no resultaron significatrivas en el MCO1 "original" que incluía todas las variables predictoras xi del conjunto de datos como variables predictoras)
 
-Comencemos por remover las variables cuyos coeficientes p en la prueba t sean mayores a 0.05, en este caso son (black, midwest y south)
+Para construir el MCO2 se removerán las variables cuyos coeficientes p en la prueba t del modelo MCO1 sean mayores a 0.05, es decir las variables no significativas para el modelo MCO1, que en este caso eran: black, midwest y south.
 
 
 ```{r}
@@ -394,7 +394,44 @@ summary(olm_model2_wage_train_data)
 ```
 
 
-#### Evaluación general de los error del modelo MCO
+El modelo resultante de aplicar MOC2 a la data de wage fue: 
+
+$$\begin{aligned}
+wage_i &= \beta_0 - \beta_1 educ_i + \beta_2 exper_i + \beta_3 faminc_i - \beta_4 female_i + \beta_5 metro_i 
+\\i = 1,...,N
+\end{aligned}$$
+
+
+####  Interpretación un modelo lineal simple SLM o MCO2 para pronóstico de salario con base en datos raciales, de genero y geográficos
+
+Empezemos específicando el modelo resultante de aplicar el MCO2 a la data de wage fomo función de las 9 variables preodictoas xi que componen el dataset. 
+
+
+```{r}
+print(round(coef(summary(olm_model2_wage_train_data)), 4))
+```
+
+
+$$wage_i = -19.27 + 2.55*educ_i + 0.19*exper_i + 0.00005*faminc_i - 5.90*female_i + 3.68*metro_i $$
+Se observa que: <br>
+
+- El valor del coeficiente del intercepto $\beta_0$  disminuyó ~1.8 menos que el valor del $\beta_0$ del MCO1. 
+Esto podria se el resultado de que el nuevo  $\beta_0$ considerará las vriables no significativas en el modelo MCO1 (black, midwest & south) pero que en general disminuían el valor del wage 
+- Todos los demas coeficientes del modelo MOC2 se mantivueron prácticamente iguales al valor dado en el MCO1
+
+
+
+### Evaluación de los error del modelo MCO2 (verificación de pruebas de hipotesis de MCO)
+
+
+Una vez teniendo el modelo MCO2 en el que todas las variables predcitoras xi son significativas se procederá a hacer las diferentes pruebas de hipitesis al error generado con el modelo MCO2 aplicado a los datos de entrenamiento, es decir, las pruebas de 
+- Normalidad de los errores
+- No autocorrelación de orden 1 y ordenes superiroes de los errores 
+- Homocerasticidad de errores
+
+
+#### Evaluación general de los error del modelo MCO2
+
 
 
 ```{r}
@@ -412,9 +449,10 @@ qqnorm(olm_model2_wage_train_data$residuals, main = "Q-Q plot of residuals",
        pch = 21, bg = "cornflowerblue", cex = 1.5)
 qqline(olm_model2_wage_train_data$residuals, col = "red", lwd = 2)
 ```
+En general se observa que el error sigue un comportamiento aproximadamente normal y centraod en cero, procedaos a llevar a cavo cada prueba de hipotesis por separado: 
 
 
-##### Test de Homocedasticidad de errores del modelo MCO ( Breusch-Pagan Test)
+#### Test de Homocedasticidad de errores del modelo MCO2 (Test Breusch-Pagan)
 
 $$\begin{cases}
 H_0&: \text{residuals are homoskedastic}\\
@@ -435,7 +473,7 @@ En este caso el valor de p< 0.05, por lo tanto rechazamos la hipótesis nula de 
 
 
 
-##### Test de Autocorrelación de errores del modelo MCO (Durbin-Watson Test)
+#### Test de Autocorrelación de errores del modelo MCO2 (Test Durbin-Watson, autocorrelación de 1er orden)
 
 $$\begin{cases}
 H_0&:\text{the errors are serially uncorrelated}\\
@@ -456,7 +494,7 @@ El estadístico de DW está cerca de 2 (esto se puede verificar en R, ya que el 
 
 
 
-##### Test de Autocorrelación de Parcial errores del modelo MCO (PACF)
+##### Test de Autocorrelación de Parcial errores del modelo MCO2 (Test PACF, autocorrelación de orden superior)
 
 
 ```{r}
@@ -469,7 +507,7 @@ A partir de estos resultados de la prueba, podemos concluir que los residuos no 
 
 
 
-##### Test de Normalidad de los errores del modelo MCO (Jarque-Bera)
+#### Test de Normalidad de los errores del modelo MCO3 (Test Jarque-Bera)
 
 $$\begin{cases}
 H_0&:\text{residuals follow a normal distribution}\\
@@ -486,7 +524,7 @@ A partir de estos resultados de la prueba, podemos decir que tenemos suficiente 
 
 
 
-### Modelo MCO3 (removiendo las variables que no resultaron significatrivas en el MCO original que incluía todas las variables predictoras xi del conjunto de datos como variables predictoras + Logaritmo de variable dependiente wage como medida para lograr normalidad en error)
+### Modelo MCO3 (removiendo las variables que no resultaron significatrivas en el MCO1 original que incluía todas las variables predictoras xi del conjunto de datos como variables predictoras + Logaritmo de variable dependiente wage como medida para lograr normalidad en error)
 
 Comencemos por remover las variables cuyos coeficientes p en la prueba t sean mayores a 0.05, en este caso son (black, midwest y south)
 
@@ -501,6 +539,8 @@ olm_model3_wage_train_data <- lm(log(wage) ~ educ+exper+faminc+female+metro, dat
 # View model summary
 summary(olm_model3_wage_train_data)
 ```
+
+
 
 
 #### Evaluación general de los error del modelo MCO3 Log(wage)
@@ -528,7 +568,8 @@ qqline(olm_model3_wage_train_data$residuals, col = "red", lwd = 2)
  tseries::jarque.bera.test(olm_model3_wage_train_data$residuals)
 ```
 
-Esto indica que 
+Esto indica que el aplicar la transformaciñon de logaritmo a la varible dependiente wage logró que se corrigiera la NO normalidad de los errores en el modelo MCO
+
 
 
 

@@ -724,18 +724,19 @@ summary(olm_model_wage_train_data)</code></pre>
 <p><span class="math display">\[\begin{aligned}
 wage_i &amp;= \beta_0 - \beta_1 black_i + \beta_2 educ_i + \beta_3
 exper_i + \beta_4 faminc_i - \beta_5 female_i + \beta_6 metro_i -
-\beta_7 midwest_i - \beta_8 south_i ;
+\beta_7 midwest_i - \beta_8 south_i + \varepsilon_i ;
 \\i = 1,...,N
 \end{aligned}\]</span></p>
 <div id="interpretación-un-modelo-lineal-simple-slm-o-mco-para-pronóstico-de-salario-con-base-en-datos-raciales-de-genero-y-geográficos" class="section level4">
 <h4>Interpretación un modelo lineal simple SLM o MCO para pronóstico de
 salario con base en datos raciales, de genero y geográficos</h4>
 <p>Empezemos específicando el modelo resultante de aplicar el MCO a la
-data de wage como función de las 9-1 variables predictoas xi que
+data de wage como función de las (9-1) variables predictoras xi que
 componen el dataset original.</p>
 <p><span class="math display">\[wage_i = -17.98 - 1.14*black_i +
 2.54*educ_i + 0.19*exper_i + 0.00005*faminc_i - 5.74*female_i +
-3.48*metro_i - 1.45*midwest_i - 1.22*south_i \]</span></p>
+3.48*metro_i - 1.45*midwest_i - 1.22*south_i +
+\varepsilon_i  \]</span></p>
 <p>Según el modelo estimado MCO1, se observa lo siguiente:</p>
 <p>Los coeficientes son los esperados para las variables “educ”,
 “exper”: - Un año más de educación representa en promedio 2.54 más de
@@ -825,15 +826,15 @@ summary(olm_model2_wage_train_data)</code></pre>
 <p>El modelo resultante de aplicar MOC2 a la data de wage fue:</p>
 <p><span class="math display">\[\begin{aligned}
 wage_i &amp;= \beta_0 - \beta_1 educ_i + \beta_2 exper_i + \beta_3
-faminc_i - \beta_4 female_i + \beta_5 metro_i
+faminc_i - \beta_4 female_i + \beta_5 metro_i + \varepsilon_i  
 \\i = 1,...,N
 \end{aligned}\]</span></p>
 <div id="interpretación-un-modelo-lineal-simple-slm-o-mco2-para-pronóstico-de-salario-con-base-en-datos-raciales-de-genero-y-geográficos" class="section level4">
 <h4>Interpretación un modelo lineal simple SLM o MCO2 para pronóstico de
 salario con base en datos raciales, de genero y geográficos</h4>
 <p>Empezemos específicando el modelo resultante de aplicar el MCO2 a la
-data de wage fomo función de las 9 variables preodictoas xi que componen
-el dataset.</p>
+data de wage fomo función de las 5 variables predicoras xi que
+resultaron significativas.</p>
 <pre class="r"><code>print(round(coef(summary(olm_model2_wage_train_data)), 4))</code></pre>
 <pre><code>##             Estimate Std. Error t value Pr(&gt;|t|)
 ## (Intercept) -19.2749     2.5837 -7.4601   0.0000
@@ -843,8 +844,8 @@ el dataset.</p>
 ## female       -5.9016     0.8751 -6.7438   0.0000
 ## metro         3.6894     1.1403  3.2353   0.0013</code></pre>
 <p><span class="math display">\[wage_i = -19.27 + 2.55*educ_i +
-0.19*exper_i + 0.00005*faminc_i - 5.90*female_i + 3.68*metro_i \]</span>
-Se observa que: <br></p>
+0.19*exper_i + 0.00005*faminc_i - 5.90*female_i + 3.68*metro_i +
+\varepsilon_i   \]</span> Se observa que: <br></p>
 <ul>
 <li>El valor del coeficiente del intercepto <span class="math inline">\(\beta_0\)</span> disminuyó ~1.8 menos que el valor
 del <span class="math inline">\(\beta_0\)</span> del MCO1. Esto podria
@@ -959,9 +960,11 @@ significatrivas en el MCO1 original que incluía todas las variables
 predictoras xi del conjunto de datos como variables predictoras +
 Logaritmo de variable dependiente wage como medida para lograr
 normalidad en error)</h3>
-<p>Comencemos por remover las variables cuyos coeficientes p en la
-prueba t sean mayores a 0.05, en este caso son (black, midwest y
-south)</p>
+<p>Para construir el MCO3 se removerán las variables cuyos coeficientes
+p en la prueba t del modelo MCO1 sean mayores a 0.05, es decir las
+variables no significativas para el modelo MCO1, que en este caso eran:
+black, midwest y south. Aedemás el modelo se hará tomadno como variable
+dependiente el log(wage)</p>
 <pre class="r"><code># Load libraries
 library(stats)
 
@@ -993,6 +996,31 @@ summary(olm_model3_wage_train_data)</code></pre>
 ## Residual standard error: 0.4631 on 963 degrees of freedom
 ## Multiple R-squared:  0.3343, Adjusted R-squared:  0.3308 
 ## F-statistic: 96.71 on 5 and 963 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>El modelo resultante de aplicar MOC3 a la data de wage fue:</p>
+<p><span class="math display">\[\begin{aligned}
+log(wage_i) &amp;= \beta_0 - \beta_1 educ_i + \beta_2 exper_i + \beta_3
+faminc_i - \beta_4 female_i + \beta_5 metro_i + \varepsilon_i  
+\\i = 1,...,N
+\end{aligned}\]</span></p>
+<div id="interpretación-un-modelo-lineal-simple-slm-o-mco2-para-pronóstico-de-salario-con-base-en-datos-raciales-de-genero-y-geográficos-1" class="section level4">
+<h4>Interpretación un modelo lineal simple SLM o MCO2 para pronóstico de
+salario con base en datos raciales, de genero y geográficos</h4>
+<p>Empezemos específicando el modelo resultante de aplicar el MCO3 a la
+data de log(wage) como función de las 5 variables predictoras xi que
+resultaron significativas.</p>
+<pre class="r"><code>print(round(coef(summary(olm_model3_wage_train_data)), 4))</code></pre>
+<pre><code>##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)   1.2727     0.0894 14.2345   0.0000
+## educ          0.1051     0.0053 19.9040   0.0000
+## exper         0.0078     0.0011  6.8483   0.0000
+## faminc        0.0000     0.0000  3.0771   0.0021
+## female       -0.2195     0.0303 -7.2495   0.0000
+## metro         0.1346     0.0395  3.4117   0.0007</code></pre>
+<p><span class="math display">\[log(wage_i) = 1.27 + 0.11*educ_i +
+0.008*exper_i + 0.000007*faminc_i - 0.22*female_i + 0.13*metro_i +
+\varepsilon_i   \]</span></p>
+<p>Se observa que: <br></p>
+</div>
 <div id="evaluación-general-de-los-error-del-modelo-mco3-logwage" class="section level4">
 <h4>Evaluación general de los error del modelo MCO3 Log(wage)</h4>
 <pre class="r"><code># Define the plot layout matrix:
@@ -1070,6 +1098,86 @@ a lag 5)</p>
 <p>A partir de estos resultados de la prueba, podemos concluir que los
 residuos no están autocorrelacionados</p>
 </div>
+</div>
+<div id="modelo-mco4-removiendo-las-variables-que-no-resultaron-significatrivas-en-el-mco1-original-que-incluía-todas-las-variables-predictoras-xi-del-conjunto-de-datos-como-variables-predictoras-logaritmo-de-variable-dependiente-wage-como-medida-para-lograr-normalidad-en-error-agregando-la-variable-educfemale-para-evaluar-el-efecto-de-un-aó-de-edicación-dado-que-se-es-female" class="section level3">
+<h3>Modelo MCO4 (removiendo las variables que no resultaron
+significatrivas en el MCO1 original que incluía todas las variables
+predictoras xi del conjunto de datos como variables predictoras +
+Logaritmo de variable dependiente wage como medida para lograr
+normalidad en error + Agregando la variable educ*female para evaluar el
+efecto de un aó de edicación dado que se es female)</h3>
+<p>Para construir el MCO4 se removerán las variables cuyos coeficientes
+p en la prueba t del modelo MCO1 sean mayores a 0.05, es decir las
+variables no significativas para el modelo MCO1, que en este caso eran:
+black, midwest y south. + Se agregó la variable female*educ Aedemás el
+modelo se hará tomadno como variable dependiente el log(wage)</p>
+<pre class="r"><code># Load libraries
+library(stats)
+
+# Fit linear model
+olm_model4_wage_train_data &lt;- lm(log(wage) ~ educ+exper+faminc+female+metro+ female*educ, data = wage_train_data)
+
+# View model summary
+summary(olm_model4_wage_train_data)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = log(wage) ~ educ + exper + faminc + female + metro + 
+##     female * educ, data = wage_train_data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.60081 -0.32069 -0.01511  0.28818  1.84191 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.360e+00  1.031e-01  13.183  &lt; 2e-16 ***
+## educ         9.858e-02  6.534e-03  15.087  &lt; 2e-16 ***
+## exper        7.885e-03  1.141e-03   6.908 8.94e-12 ***
+## faminc       9.867e-07  3.296e-07   2.993 0.002830 ** 
+## female      -4.752e-01  1.545e-01  -3.075 0.002165 ** 
+## metro        1.380e-01  3.948e-02   3.496 0.000494 ***
+## educ:female  1.779e-02  1.055e-02   1.687 0.091948 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.4626 on 962 degrees of freedom
+## Multiple R-squared:  0.3362, Adjusted R-squared:  0.3321 
+## F-statistic: 81.22 on 6 and 962 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Se observa como agregar la variable female<em>educ no mejoró el R^2
+ajustado además de que a un nivel de significancia <span class="math inline">\(\alpha = 0.05\)</span> la variable female</em>educ
+resulta NO ser significativa.</p>
+<pre class="r"><code># Load libraries
+library(stats)
+
+# Fit linear model
+olm_model4_wage_train_data &lt;- lm(log(wage) ~ educ+exper+faminc+female+metro+ I(educ^2), data = wage_train_data)
+
+# View model summary
+summary(olm_model4_wage_train_data)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = log(wage) ~ educ + exper + faminc + female + metro + 
+##     I(educ^2), data = wage_train_data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.60893 -0.31922 -0.01956  0.29115  1.84354 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.608e+00  1.819e-01   8.841  &lt; 2e-16 ***
+## educ         5.430e-02  2.458e-02   2.209 0.027426 *  
+## exper        7.619e-03  1.144e-03   6.661 4.57e-11 ***
+## faminc       9.653e-07  3.298e-07   2.927 0.003500 ** 
+## female      -2.167e-01  3.026e-02  -7.163 1.57e-12 ***
+## metro        1.304e-01  3.944e-02   3.307 0.000976 ***
+## I(educ^2)    1.876e-03  8.872e-04   2.115 0.034690 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.4622 on 962 degrees of freedom
+## Multiple R-squared:  0.3374, Adjusted R-squared:  0.3332 
+## F-statistic: 81.63 on 6 and 962 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <div id="bibliografía" class="section level2">
 <h2>Bibliografía</h2>

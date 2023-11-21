@@ -322,19 +322,19 @@ summary(olm_model_wage_train_data)
 El modelo resultante de aplicar MOC1 a la data de wage fue: 
 
 $$\begin{aligned}
-wage_i &= \beta_0 - \beta_1 black_i + \beta_2 educ_i + \beta_3 exper_i + \beta_4 faminc_i - \beta_5 female_i + \beta_6 metro_i - \beta_7 midwest_i - \beta_8 south_i ; 
+wage_i &= \beta_0 - \beta_1 black_i + \beta_2 educ_i + \beta_3 exper_i + \beta_4 faminc_i - \beta_5 female_i + \beta_6 metro_i - \beta_7 midwest_i - \beta_8 south_i + \varepsilon_i ; 
 \\i = 1,...,N
 \end{aligned}$$
 
 
 ####  Interpretación un modelo lineal simple SLM o MCO para pronóstico de salario con base en datos raciales, de genero y geográficos
 
-Empezemos específicando el modelo resultante de aplicar el MCO a la data de wage como función de las 9-1 variables predictoas xi que componen el dataset original. 
+Empezemos específicando el modelo resultante de aplicar el MCO a la data de wage como función de las (9-1) variables predictoras xi que componen el dataset original. 
 
 
 
 
-$$wage_i = -17.98 - 1.14*black_i + 2.54*educ_i + 0.19*exper_i + 0.00005*faminc_i - 5.74*female_i + 3.48*metro_i - 1.45*midwest_i - 1.22*south_i $$
+$$wage_i = -17.98 - 1.14*black_i + 2.54*educ_i + 0.19*exper_i + 0.00005*faminc_i - 5.74*female_i + 3.48*metro_i - 1.45*midwest_i - 1.22*south_i + \varepsilon_i  $$
 
 
 Según el modelo estimado MCO1, se observa lo siguiente:
@@ -396,18 +396,17 @@ olm_model2_wage_train_data <- lm(wage ~ educ+exper+faminc+female+metro, data = w
 summary(olm_model2_wage_train_data)
 ```
 
-
 El modelo resultante de aplicar MOC2 a la data de wage fue: 
 
 $$\begin{aligned}
-wage_i &= \beta_0 - \beta_1 educ_i + \beta_2 exper_i + \beta_3 faminc_i - \beta_4 female_i + \beta_5 metro_i 
+wage_i &= \beta_0 - \beta_1 educ_i + \beta_2 exper_i + \beta_3 faminc_i - \beta_4 female_i + \beta_5 metro_i + \varepsilon_i  
 \\i = 1,...,N
 \end{aligned}$$
 
 
 ####  Interpretación un modelo lineal simple SLM o MCO2 para pronóstico de salario con base en datos raciales, de genero y geográficos
 
-Empezemos específicando el modelo resultante de aplicar el MCO2 a la data de wage fomo función de las 9 variables preodictoas xi que componen el dataset. 
+Empezemos específicando el modelo resultante de aplicar el MCO2 a la data de wage fomo función de las 5 variables predicoras xi que resultaron significativas. 
 
 
 ```{r}
@@ -415,7 +414,7 @@ print(round(coef(summary(olm_model2_wage_train_data)), 4))
 ```
 
 
-$$wage_i = -19.27 + 2.55*educ_i + 0.19*exper_i + 0.00005*faminc_i - 5.90*female_i + 3.68*metro_i $$
+$$wage_i = -19.27 + 2.55*educ_i + 0.19*exper_i + 0.00005*faminc_i - 5.90*female_i + 3.68*metro_i + \varepsilon_i   $$
 Se observa que: <br>
 
 - El valor del coeficiente del intercepto $\beta_0$  disminuyó ~1.8 menos que el valor del $\beta_0$ del MCO1. 
@@ -531,8 +530,7 @@ A partir de estos resultados de la prueba, podemos decir que tenemos suficiente 
 
 ### Modelo MCO3 (removiendo las variables que no resultaron significatrivas en el MCO1 original que incluía todas las variables predictoras xi del conjunto de datos como variables predictoras + Logaritmo de variable dependiente wage como medida para lograr normalidad en error)
 
-Comencemos por remover las variables cuyos coeficientes p en la prueba t sean mayores a 0.05, en este caso son (black, midwest y south)
-
+Para construir el MCO3 se removerán las variables cuyos coeficientes p en la prueba t del modelo MCO1 sean mayores a 0.05, es decir las variables no significativas para el modelo MCO1, que en este caso eran: black, midwest y south. Aedemás el modelo se hará tomadno como variable dependiente el log(wage)
 
 ```{r}
 # Load libraries
@@ -544,6 +542,28 @@ olm_model3_wage_train_data <- lm(log(wage) ~ educ+exper+faminc+female+metro, dat
 # View model summary
 summary(olm_model3_wage_train_data)
 ```
+
+El modelo resultante de aplicar MOC3 a la data de wage fue: 
+
+$$\begin{aligned}
+log(wage_i) &= \beta_0 - \beta_1 educ_i + \beta_2 exper_i + \beta_3 faminc_i - \beta_4 female_i + \beta_5 metro_i + \varepsilon_i  
+\\i = 1,...,N
+\end{aligned}$$
+
+
+####  Interpretación un modelo lineal simple SLM o MCO2 para pronóstico de salario con base en datos raciales, de genero y geográficos
+
+Empezemos específicando el modelo resultante de aplicar el MCO3 a la data de log(wage) como función de las 5 variables predictoras xi que resultaron significativas. 
+
+
+```{r}
+print(round(coef(summary(olm_model3_wage_train_data)), 4))
+```
+
+
+$$log(wage_i) = 1.27 + 0.11*educ_i + 0.008*exper_i + 0.000007*faminc_i - 0.22*female_i + 0.13*metro_i + \varepsilon_i   $$
+
+Se observa que: <br>
 
 
 
@@ -622,6 +642,62 @@ pacf(olm_model3_wage_train_data$residuals)
 Como podemos ver, no tenemos motivos para rechazar la hipótesis nula de autocorrelación en ninguno de los casos (excepto quizá para el error a lag 5)
 
 A partir de estos resultados de la prueba, podemos concluir que los residuos no están autocorrelacionados
+
+
+
+
+### Modelo MCO4 (removiendo las variables que no resultaron significatrivas en el MCO1 original que incluía todas las variables predictoras xi del conjunto de datos como variables predictoras + Logaritmo de variable dependiente wage como medida para lograr normalidad en error + Agregando la variable educ*female para evaluar el efecto de un aó de edicación dado que se es female)
+
+Para construir el MCO4 se removerán las variables cuyos coeficientes p en la prueba t del modelo MCO1 sean mayores a 0.05, es decir las variables no significativas para el modelo MCO1, que en este caso eran: black, midwest y south. + Se agregó la variable female*educ Aedemás el modelo se hará tomadno como variable dependiente el log(wage)
+
+
+
+```{r}
+# Load libraries
+library(stats)
+
+# Fit linear model
+olm_model4_wage_train_data <- lm(log(wage) ~ educ+exper+faminc+female+metro+ female*educ, data = wage_train_data)
+
+# View model summary
+summary(olm_model4_wage_train_data)
+```
+
+Se observa como agregar la variable female*educ no mejoró el R^2 ajustado además de que a un nivel de significancia $\alpha = 0.05$ la variable 
+female*educ resulta NO ser significativa.
+
+
+
+
+### Modelo MCG
+
+```{r}
+# Install 'nlme' package if you haven't already
+install.packages("nlme")
+
+# Load the 'nlme' library
+library(nlme)
+
+# Fit linear model
+olm_model5_wage_train_data <- gls(log(wage) ~ educ + exper + faminc + female + metro, correlation = corARMA(p = 5), method = "ML", data = wage_train_data)
+
+# View model summary
+summary(olm_model5_wage_train_data)
+
+```
+
+
+
+```{r}
+# Load libraries
+library("nmle")
+
+# Fit linear model
+olm_model5_wage_train_data <- gls(log(wage) ~ educ+exper+faminc+female+metro, correlation = corARMA(p=5) , method="ML",  data = wage_train_data)
+
+# View model summary
+summary(olm_model5_wage_train_data)
+```
 
 
 

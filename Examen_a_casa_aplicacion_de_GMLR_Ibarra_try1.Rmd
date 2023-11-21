@@ -673,32 +673,18 @@ female*educ resulta NO ser significativa.
 
 ```{r}
 # Install 'nlme' package if you haven't already
-install.packages("nlme")
+#install.packages("nlme")
 
 # Load the 'nlme' library
 library(nlme)
 
-# Fit linear model
-olm_model5_wage_train_data <- gls(log(wage) ~ educ + exper + faminc + female + metro, correlation = corARMA(p = 5), method = "ML", data = wage_train_data)
+# Fit genralized linear model
+glm_1_wage_train_data <- gls(log(wage) ~ educ + exper + faminc + female + metro, correlation = corARMA(p = 5), method = "ML", data = wage_train_data)
 
 # View model summary
-summary(olm_model5_wage_train_data)
+summary(glm_1_wage_train_data)
 
 ```
-
-
-
-```{r}
-# Load libraries
-library("nmle")
-
-# Fit linear model
-olm_model5_wage_train_data <- gls(log(wage) ~ educ+exper+faminc+female+metro, correlation = corARMA(p=5) , method="ML",  data = wage_train_data)
-
-# View model summary
-summary(olm_model5_wage_train_data)
-```
-
 
 
 

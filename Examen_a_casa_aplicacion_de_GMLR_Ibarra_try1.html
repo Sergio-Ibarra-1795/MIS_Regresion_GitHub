@@ -299,23 +299,17 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before {
-content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "\e259";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "";
-border: none;
-}
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "";
+content: "\e258";
 font-family: 'Glyphicons Halflings';
-display: inline-block;
-padding: 10px;
-border-right: 1px solid #ddd;
+border: none;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -534,26 +528,30 @@ distribution, where I is the identity matrix.</p>
 <div id="ejemplo-de-aplicación-de-glm" class="section level3">
 <h3>Ejemplo de aplicación de GLM</h3>
 <pre class="r"><code>library(lmtest)</code></pre>
+<pre><code>## Warning: package &#39;lmtest&#39; was built under R version 4.3.2</code></pre>
 <pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## Warning: package &#39;zoo&#39; was built under R version 4.3.2</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;zoo&#39;</code></pre>
 <pre><code>## The following objects are masked from &#39;package:base&#39;:
 ## 
 ##     as.Date, as.Date.numeric</code></pre>
 <pre class="r"><code>library(lrmest)</code></pre>
-<pre><code>## Warning: package &#39;lrmest&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;lrmest&#39; was built under R version 4.3.2</code></pre>
 <pre class="r"><code>library(tseries)</code></pre>
+<pre><code>## Warning: package &#39;tseries&#39; was built under R version 4.3.2</code></pre>
 <pre><code>## Registered S3 method overwritten by &#39;quantmod&#39;:
 ##   method            from
 ##   as.zoo.data.frame zoo</code></pre>
 <pre class="r"><code>library(nortest)
 ##library(car)
 library(sandwich)</code></pre>
-<pre><code>## Warning: package &#39;sandwich&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;sandwich&#39; was built under R version 4.3.2</code></pre>
 <pre class="r"><code>library(lattice)
-library(viridisLite)
-library(leaps)</code></pre>
-<pre><code>## Warning: package &#39;leaps&#39; was built under R version 4.2.3</code></pre>
+library(viridisLite)</code></pre>
+<pre><code>## Warning: package &#39;viridisLite&#39; was built under R version 4.3.2</code></pre>
+<pre class="r"><code>library(leaps)</code></pre>
+<pre><code>## Warning: package &#39;leaps&#39; was built under R version 4.3.2</code></pre>
 <div id="importación-y-lectura-de-la-data-para-el-modelo-glm" class="section level4">
 <h4>Importación y lectura de la data para el modelo GLM</h4>
 <pre class="r"><code>wage_source &lt;- &quot;http://www.principlesofeconometrics.com/poe5/data/csv/cps5_small.csv&quot;
@@ -1146,38 +1144,55 @@ summary(olm_model4_wage_train_data)</code></pre>
 <p>Se observa como agregar la variable female<em>educ no mejoró el R^2
 ajustado además de que a un nivel de significancia <span class="math inline">\(\alpha = 0.05\)</span> la variable female</em>educ
 resulta NO ser significativa.</p>
-<pre class="r"><code># Load libraries
-library(stats)
+</div>
+<div id="modelo-mcg" class="section level3">
+<h3>Modelo MCG</h3>
+<pre class="r"><code># Install &#39;nlme&#39; package if you haven&#39;t already
+#install.packages(&quot;nlme&quot;)
 
-# Fit linear model
-olm_model4_wage_train_data &lt;- lm(log(wage) ~ educ+exper+faminc+female+metro+ I(educ^2), data = wage_train_data)
+# Load the &#39;nlme&#39; library
+library(nlme)</code></pre>
+<pre><code>## Warning: package &#39;nlme&#39; was built under R version 4.3.2</code></pre>
+<pre class="r"><code># Fit genralized linear model
+glm_1_wage_train_data &lt;- gls(log(wage) ~ educ + exper + faminc + female + metro, correlation = corARMA(p = 5), method = &quot;ML&quot;, data = wage_train_data)
 
 # View model summary
-summary(olm_model4_wage_train_data)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = log(wage) ~ educ + exper + faminc + female + metro + 
-##     I(educ^2), data = wage_train_data)
+summary(glm_1_wage_train_data)</code></pre>
+<pre><code>## Generalized least squares fit by maximum likelihood
+##   Model: log(wage) ~ educ + exper + faminc + female + metro 
+##   Data: wage_train_data 
+##        AIC      BIC    logLik
+##   1263.987 1322.502 -619.9934
 ## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -1.60893 -0.31922 -0.01956  0.29115  1.84354 
+## Correlation Structure: ARMA(5,0)
+##  Formula: ~1 
+##  Parameter estimate(s):
+##        Phi1        Phi2        Phi3        Phi4        Phi5 
+## -0.05140755  0.03839368  0.03939300 -0.05036610 -0.07170809 
 ## 
 ## Coefficients:
-##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  1.608e+00  1.819e-01   8.841  &lt; 2e-16 ***
-## educ         5.430e-02  2.458e-02   2.209 0.027426 *  
-## exper        7.619e-03  1.144e-03   6.661 4.57e-11 ***
-## faminc       9.653e-07  3.298e-07   2.927 0.003500 ** 
-## female      -2.167e-01  3.026e-02  -7.163 1.57e-12 ***
-## metro        1.304e-01  3.944e-02   3.307 0.000976 ***
-## I(educ^2)    1.876e-03  8.872e-04   2.115 0.034690 *  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+##                  Value  Std.Error   t-value p-value
+## (Intercept)  1.2496230 0.08798902 14.202034  0.0000
+## educ         0.1061587 0.00522898 20.301999  0.0000
+## exper        0.0080724 0.00111904  7.213640  0.0000
+## faminc       0.0000010 0.00000033  3.057793  0.0023
+## female      -0.2225332 0.02966907 -7.500511  0.0000
+## metro        0.1393063 0.03890575  3.580609  0.0004
 ## 
-## Residual standard error: 0.4622 on 962 degrees of freedom
-## Multiple R-squared:  0.3374, Adjusted R-squared:  0.3332 
-## F-statistic: 81.63 on 6 and 962 DF,  p-value: &lt; 2.2e-16</code></pre>
+##  Correlation: 
+##        (Intr) educ   exper  faminc female
+## educ   -0.845                            
+## exper  -0.493  0.210                     
+## faminc  0.012 -0.139  0.000              
+## female -0.035 -0.115  0.004 -0.059       
+## metro  -0.300 -0.078  0.035 -0.043 -0.027
+## 
+## Standardized residuals:
+##         Min          Q1         Med          Q3         Max 
+## -3.40243275 -0.70611672 -0.03074578  0.62980301  3.94274363 
+## 
+## Residual standard error: 0.4616713 
+## Degrees of freedom: 969 total; 963 residual</code></pre>
 </div>
 <div id="bibliografía" class="section level2">
 <h2>Bibliografía</h2>

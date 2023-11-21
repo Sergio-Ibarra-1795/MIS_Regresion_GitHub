@@ -1,7 +1,7 @@
 ---
 title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try1"
 author: "SIR"
-date: "2023-11-15"
+date: "2023-11-21"
 output: html_document
 ---
 
@@ -29,6 +29,9 @@ En general el modelo MCG asume los siguientes enunciados como ciertos:
  C. El valor esperado del error dado los valores de la matriz X es cero 
  $$\mathbb{E} \left( \boldsymbol{\varepsilon} | \mathbf{X}\right) = \boldsymbol{0}$$
  D. La varianza del error dado los valores de la matriz X puede calcularse como: 
+ 
+ 
+ 
  
  $$\mathbb{V}{\rm ar}\left( \boldsymbol{\varepsilon} | \mathbf{X} \right)= \mathbb{E} \left( \boldsymbol{\varepsilon} \boldsymbol{\varepsilon}^\top \right)$$
  es decir, 
@@ -449,7 +452,9 @@ qqnorm(olm_model2_wage_train_data$residuals, main = "Q-Q plot of residuals",
        pch = 21, bg = "cornflowerblue", cex = 1.5)
 qqline(olm_model2_wage_train_data$residuals, col = "red", lwd = 2)
 ```
-En general se observa que el error sigue un comportamiento aproximadamente normal y centraod en cero, procedaos a llevar a cavo cada prueba de hipotesis por separado: 
+
+
+En general se observa que el error sigue un comportamiento aproximadamente normal y centraod en cero, procedamos a llevar a cabo cada prueba de hipotesis por separado: 
 
 
 #### Test de Homocedasticidad de errores del modelo MCO2 (Test Breusch-Pagan)
@@ -494,7 +499,7 @@ El estadístico de DW está cerca de 2 (esto se puede verificar en R, ya que el 
 
 
 
-##### Test de Autocorrelación de Parcial errores del modelo MCO2 (Test PACF, autocorrelación de orden superior)
+#### Test de Autocorrelación de Parcial errores del modelo MCO2 (Test PACF, autocorrelación de orden superior)
 
 
 ```{r}
@@ -507,7 +512,7 @@ A partir de estos resultados de la prueba, podemos concluir que los residuos no 
 
 
 
-#### Test de Normalidad de los errores del modelo MCO3 (Test Jarque-Bera)
+#### Test de Normalidad de los errores del modelo MCO2 (Test Jarque-Bera)
 
 $$\begin{cases}
 H_0&:\text{residuals follow a normal distribution}\\
@@ -561,6 +566,24 @@ qqnorm(olm_model3_wage_train_data$residuals, main = "Q-Q plot of residuals",
        pch = 21, bg = "cornflowerblue", cex = 1.5)
 qqline(olm_model3_wage_train_data$residuals, col = "red", lwd = 2)
 ```
+En general de las gráficas del error del modelo MCO3 se observa que: 
+
+Residual vs. fitted plot: En el gráfico de residuos vs. valores ajustados, los residuos parecen tener una varianza constante, aunque hay algunos puntos que tienen valores de residuos grandes para valores ajustados bajos, pero esos puntos no constituyen la mayoría (la prueba de heterocedasticidad nos ayudará a determinar si su varianza es la misma en todas las observaciones).
+
+
+Histograma de residuos: En el histograma de residuos, los residuos parecen ser normales, aunque el histograma parece tener una cola derecha un poco más larga.
+
+
+Gráfico Q-Q de residuos: Los residuos en el gráfico Q-Q parecen caer a lo largo de una línea recta con los cuantiles teóricos de una distribución normal, excepto por un punto en el extremo derecho (que probablemente sea un valor atípico).
+
+
+
+#### Test de Normalidad de los errores del modelo MCO3 (Test Jarque-Bera)
+
+$$\begin{cases}
+H_0&:\text{residuals follow a normal distribution}\\
+H_1&:\text{residuals do not follow a normal distribution}
+\end{cases}$$
 
 
 
@@ -569,6 +592,36 @@ qqline(olm_model3_wage_train_data$residuals, col = "red", lwd = 2)
 ```
 
 Esto indica que el aplicar la transformaciñon de logaritmo a la varible dependiente wage logró que se corrigiera la NO normalidad de los errores en el modelo MCO
+
+
+
+
+#### Test de Homocedasticidad de errores del modelo MCO3 (Test Breusch-Pagan)
+
+$$\begin{cases}
+H_0&: \text{residuals are homoskedastic}\\
+H_1&: \text{residuals are heteroskedastic}
+\end{cases}$$
+
+
+```{r}
+# Breusch–Pagan Test
+
+print(lmtest::bptest(olm_model3_wage_train_data))
+```
+
+En este caso el valor de (sigue siendo) p< 0.05, por lo tanto rechazamos la hipótesis nula de que los residuos son homocedásticos. Esto significa que los residuos son heterocedásticos.
+
+
+#### Test de Autocorrelación de Parcial errores del modelo MCO23
+
+```{r}
+pacf(olm_model3_wage_train_data$residuals)
+```
+
+Como podemos ver, no tenemos motivos para rechazar la hipótesis nula de autocorrelación en ninguno de los casos (excepto quizá para el error a lag 5)
+
+A partir de estos resultados de la prueba, podemos concluir que los residuos no están autocorrelacionados
 
 
 

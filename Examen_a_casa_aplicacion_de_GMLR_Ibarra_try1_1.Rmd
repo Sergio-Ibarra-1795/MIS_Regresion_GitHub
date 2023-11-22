@@ -1,7 +1,7 @@
 ---
 title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try1_1"
 author: "SIR"
-date: "2023-11-21"
+date: "2023-11-22"
 output: html_document
 ---
 
@@ -493,8 +493,7 @@ print(lmtest::dwtest(olm_model2_wage_train_data, alternative = "two.sided"))
 
 ```
 
-
-El estadístico de DW está cerca de 2 (esto se puede verificar en R, ya que el valor p asociado es mayor a 0.05), por lo que no rechazamos la hipótesis nula de que no existe correlación serial.
+El estadístico de DW está cerca de 2 (esto se puede verificar en R, ya que el valor p asociado es mayor a 0.05), por lo que no rechazamos la hipótesis nula de que no existe correlación serial de orden 1.
 
 
 
@@ -523,8 +522,7 @@ H_1&:\text{residuals do not follow a normal distribution}
  tseries::jarque.bera.test(olm_model2_wage_train_data$residuals)
 ```
 
-
-A partir de estos resultados de la prueba, podemos decir que tenemos suficiente información para rechazar H0 y por lo tanto concluir que los residuos NO se distribuyen normalmente :(
+A partir de estos resultados de la prueba, podemos decir que tenemos suficiente información para rechazar H0 y por lo tanto concluir que los residuos del modelo MCO2 NO se distribuyen normalmente :(
 
 
 
@@ -633,7 +631,7 @@ print(lmtest::bptest(olm_model3_wage_train_data))
 En este caso el valor de (sigue siendo) p< 0.05, por lo tanto rechazamos la hipótesis nula de que los residuos son homocedásticos. Esto significa que los residuos son heterocedásticos.
 
 
-#### Test de Autocorrelación de Parcial errores del modelo MCO23
+#### Test de Autocorrelación de Parcial errores del modelo MCO3
 
 ```{r}
 pacf(olm_model3_wage_train_data$residuals)
@@ -679,12 +677,27 @@ female*educ resulta NO ser significativa.
 library(nlme)
 
 # Fit genralized linear model
-glm_1_wage_train_data <- gls(log(wage) ~ educ + exper + faminc + female + metro, correlation = corARMA(p = 5), method = "ML", data = wage_train_data)
+glm_1_wage_train_data <- gls(log(wage) ~ educ + exper + faminc + female + metro, correlation = corARMA(q = 5), method = "ML", data = wage_train_data)
 
 # View model summary
 summary(glm_1_wage_train_data)
 
 ```
+
+#### Test de Normalidad de los errores del modelo GLM1 (Test Jarque-Bera)
+
+$$\begin{cases}
+H_0&:\text{residuals follow a normal distribution}\\
+H_1&:\text{residuals do not follow a normal distribution}
+\end{cases}$$
+
+
+
+```{r}
+ tseries::jarque.bera.test(glm_1_wage_train_data$residuals)
+```
+No se tiene evidencia suficiente para rechazar la hipotesis nula del test JB por lo que se puede decir que los errores del modelo GLM1 siguen una distribución normal
+
 
 
 #### Test de Homocedasticidad de errores del modelo GLM1 (Test Breusch-Pagan)
@@ -696,16 +709,12 @@ H_1&: \text{residuals are heteroskedastic}
 
 
 
-
-
-
-
 ```{r}
 # Extract residuals from the model
-residuals_model <- residuals(glm_1_wage_train_data)
+residuals_model_glm1 <- residuals(glm_1_wage_train_data)
 
 # Create a data frame including residuals and original predictors
-residual_data <- data.frame(residuals = residuals_model,
+residual_data_model_glm1 <- data.frame(residuals = residuals_model_glm1,
                             educ = wage_train_data$educ,
                             exper = wage_train_data$exper,
                             faminc = wage_train_data$faminc,
@@ -713,16 +722,37 @@ residual_data <- data.frame(residuals = residuals_model,
                             metro = wage_train_data$metro)
 
 # Run auxiliary regression of squared residuals on independent variables
-aux_regression <- lm(residuals ~ educ + exper + faminc + female + metro, data = residual_data)
+aux_regression_residuals_model_glm1 <- lm(residuals_model_glm1 ~ educ + exper + faminc + female + metro, data = residual_data_model_glm1)
 
 # Perform Breusch-Pagan test using the auxiliary regression
 library(lmtest)
 
-bptest(aux_regression)
+bptest(aux_regression_residuals_model_glm1)
 ```
 
 
 En este caso el valor de (sigue siendo) p< 0.05, por lo tanto rechazamos la hipótesis nula de que los residuos son homocedásticos. Esto significa que los residuos para el modelo GLM1 siguen siendo heterocedásticos.
+
+
+#### Test de Autocorrelación de Parcial errores del modelo GLM1
+
+
+
+```{r}
+pacf(residuals_model_glm1)
+```
+
+
+
+Nos encontramos entonces en el caso donde los errores no están correlacionados pero son heterocerastico, es decir en donde nuestra matriz de covarianza del error es del tipo:
+
+
+$${\Omega}= \begin{pmatrix}
+\omega_{1}  & 0 & 0 & ..  0\\ 
+0 &  \omega_{2}& 0 & ..  0\\
+0 &  0& \omega_{3} & ..  0\\ 
+0 & 0 & 0 &  ..  \omega_{n} 
+\end{pmatrix}$$
 
 
 
@@ -741,6 +771,122 @@ $$\begin{aligned}
 
 
 Además, en una regresión múltiple, el patrón de heterocedasticidad puede depender de más de una variable explicativa; incluso podría estar relacionado con variables no incluidas en el modelo. Entonces, ¿cómo seleccionamos la forma más probable de heterocedasticidad?
+
+
+Es a partir de los errores de los MCO que se obtiene una ponderación que sera el número que dividirá a todos los valores de covarianza heterocerasticos 
+
+$$\begin{aligned}
+\sigma^2_i &= \exp\left( \alpha_0 + \alpha_1 Z_{1,i} + ... + \alpha_m Z_{m,i} \right)\\
+&= \sigma^2 \exp\left(\alpha_1 Z_{1,i} + ... + \alpha_m Z_{m,i} \right),\ \text{ where } \exp\left( \alpha_0 \right) = \sigma^2
+\end{aligned}$$
+
+
+Modelar la varianza como una función exponencial de algunas variables explicativas (como α0+α1Z1,i+...+αmZm,i) sugiere una forma funcional para explicar las varianzas variables.
+
+Inicialmente, σi2=exp(α0+α1Z1,i+...+αmZm,i) define la varianza (σi2) como una función exponencial de los predictores (Z1,i,Z2,i,...,Zm,i) con parámetros (α0,α1,...,αm).
+
+
+Tomar logaritmos de ambos lados y agregar/eliminar el residuo de OLS da como resultado:
+
+
+$$\log(\sigma^2_i) = \alpha_0 + \alpha_1 Z_{1,i} + ... + \alpha_m Z_{m,i}  \pm \log(\widehat{\epsilon}^2_i)$$
+
+Tomar logaritmos de ambos lados de la ecuación ayuda a linealizar la relación. Convierte la relación multiplicativa entre la varianza y los predictores en una aditiva.
+
+Esto conduce a log⁡(σi2)=α0+α1Z1,i+...+αmZm,i.
+
+Agregar o eliminar los residuos de OLS (Ordinary Least Squares) de la ecuación produce log⁡(ϵi2)=α0+α1Z1,i+...+αmZm,i±log(ϵi2/σi2).
+
+
+Esto se puede simplificar como: 
+
+$$\begin{aligned}
+\log(\widehat{\epsilon}^2_i) &= \alpha_0 + \alpha_1 Z_{1,i} + ... + \alpha_m Z_{m,i} + \log \left( \dfrac{\widehat{\epsilon}^2_i}{\sigma^2_i} \right)\\
+&= \alpha_0 + \alpha_1 Z_{1,i} + ... + \alpha_m Z_{m,i} + v_i
+\end{aligned}$$
+
+
+Esta ecuación se simplifica a log⁡(ϵi2)=α0+α1Z1,i+...+αmZm,i+vi, donde vi es un término de error introducido.
+
+
+El término de error introducido vi captura la diferencia entre la varianza real y la varianza predicha por el modelo.
+
+
+
+Se estiman los coeificentes (α0,α1,...,αm) usando MCO para cuantificar como los predictores  (Z1,i,Z2,i,...,Zm,i) se relacionan con la variabilidad de los reisduales
+
+Las propiedades de este modelo dependen de las propiedades del término de error introducido vi. En muestras más grandes, se espera que este término de error sea más cercano a lo que esperamos del término de error (homocedástico con media cero).
+
+
+### El procedimiento del método de GLS ó MCG para el caso de errores heterocerasticos 
+
+
+1. Llevar a cabo la regesion $\mathbf{Y} = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon}$ usando los MCO
+2. Usar los residuos de los MCO $\widehat{\boldsymbol{\varepsilon}}_{OLS}$ como $\log(\epsilon_i^2)$
+
+
+3. Calcular $\log(\epsilon_i^2) = \alpha_0 + \alpha_1 Z_{1,i} + ... + \alpha_m Z_{m,i} + v_i$
+
+En la práctica, utilizamos las mismas variables del conjunto $\mathbf{X}$, a menos que sepamos con certeza que existen variables explicativas adicionales que podrían determinar la heterocedasticidad.
+
+4. Se calcula el valor de la variable hi que se usará como una espeice de "ponderador" de varianzas que tiene como intención hacer de dichas varianzas heterocerasticas, lo más homocerasticas posibles, en este caso, lo mas cercanas y parecidas a la unidad
+
+$$\widehat{h}_i = \exp\left(\widehat{\log(\epsilon_i^2)}\right)$$
+
+5. Se Llevaa a cabo de nuevo la regesion $\mathbf{Y} = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon}$ usando ahora  WLS
+
+$$\omega_i^{-1} = 1/\sqrt{\widehat{h}_i}$$
+
+$$\mathbf{\Psi}^\top = \mathbf{\Psi} = \text{diag}\left( 1/\sqrt{\widehat{h}_1}, ..., 1/\sqrt{\widehat{h}_N}\right)$$
+
+Lo que implica que nuestro modelo ahora es del tipo:
+
+$$Y_i / \sqrt{\widehat{h}_i} = \beta_0 \cdot \left(1/\sqrt{\widehat{h}_i} \right) + \beta_1 \cdot \left(X_{1,i} / \sqrt{\widehat{h}_i} \right) + ... + \beta_k \cdot \left(X_{k,i} / \sqrt{\widehat{h}_i} \right) + \epsilon_i/\sqrt{\widehat{h}_i}$$
+
+
+Nuestro modelo ya no contiene una constante -β0 ahora se usa para la nueva variable (no constante) $1/\sqrt{\widehat{h}_i} \neq 1$
+
+
+
+```{r}
+
+# Extract residuals from the model
+residuals_model_glm1 <- residuals(glm_1_wage_train_data)
+
+residuals_model_glm1_dataframe <- data.frame(log_e2 = log(residuals_model_glm1^2), wage_train_data$educ, wage_train_data$exper, wage_train_data$faminc, wage_train_data$female, wage_train_data$metro)
+
+
+residual_linear_model<- lm(log(residuals_model_glm1) ~  wage_train_data$educ+ wage_train_data$exper+wage_train_data$faminc+wage_train_data$female+wage_train_data$metro, data = residuals_model_glm1_dataframe)
+
+
+```
+
+```{r}
+residual_linear_model
+```
+
+```{r}
+h_est <- exp(residual_linear_model$fitted.values)
+#
+```
+
+
+
+```{r}
+
+
+data_mat <- data.frame(glm_1_wage_train_data$fitted, wage_train_data$educ, 
+    wage_train_data$exper,  wage_train_data$faminc ,wage_train_data$female, wage_train_data$metro)
+
+head(data_mat)
+```
+
+
+
+```{r}
+mdl_wls <- lm(wage_train_data$wage ~ wage_train_data$educ + wage_train_data$exper +wage_train_data$faminc+wage_train_data$female+wage_train_data$metro, data = data_mat, weights =  1 / h_est)
+print(round(coef(summary(mdl_wls)), 5))
+```
 
 
 

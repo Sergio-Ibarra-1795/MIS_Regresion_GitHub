@@ -1,5 +1,5 @@
 ---
-title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try1"
+title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try1_1"
 author: "SIR"
 date: "2023-11-21"
 output: html_document

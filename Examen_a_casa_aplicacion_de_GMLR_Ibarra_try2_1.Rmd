@@ -1,5 +1,5 @@
 ---
-title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try2"
+title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try2_1"
 author: "SIR"
 date: "2023-11-23"
 output: html_document
@@ -969,7 +969,11 @@ length(log_e2)
 
 
 ```{r}
-residuals_model_mco1_dataframe
+head(residuals_model_mco1_dataframe)
+```
+
+```{r}
+length(residuals_model_mco1_dataframe)
 ```
 
 
@@ -1030,7 +1034,9 @@ print(round(coef(summary(mdl_wls)), 5))
 
 ```
 
-#### Calculando los residuos del WLS 
+
+#### Calculando los residuos del modelo MCG (aplicando el escalado de matriz de varianza)
+
 
 ```{r}
 errors_wls_mco1 <- 1 / sqrt(h_est_model_mco1) * mdl_wls$residuals
@@ -1059,8 +1065,41 @@ plot(wage_train_data$educ, errors_wls_mco1, col = "blue", main = bquote("WLS Res
 ```
 
 
+Observamos claramente que la magnitud de los residuos del modelo GLM1/MCG1 es menor que el MCO1.
 
 
+
+#### Test de Homocedasticidad de errores del modelo GLM2 (Test Breusch-Pagan)
+
+$$\begin{cases}
+H_0&: \text{residuals are homoskedastic}\\
+H_1&: \text{residuals are heteroskedastic}
+\end{cases}$$
+
+
+```{r}
+# Extract residuals from the model
+residuals_model_glm2 <- errors_wls_mco1
+
+# Create a data frame including residuals and original predictors
+residual_data_model_glm2 <- data.frame(residuals = errors_wls_mco1,
+                            educ = wage_train_data$educ,
+                            exper = wage_train_data$exper,
+                            faminc = wage_train_data$faminc,
+                            female = wage_train_data$female,
+                            metro = wage_train_data$metro)
+
+# Run auxiliary regression of squared residuals on independent variables
+aux_regression_residuals_model_glm2 <- lm(residuals_model_glm2 ~ educ + exper + faminc + female + metro, data = residual_data_model_glm2)
+
+# Perform Breusch-Pagan test using the auxiliary regression
+library(lmtest)
+
+bptest(aux_regression_residuals_model_glm2)
+```
+
+
+En este caso el valor de ya es mayor a p> 0.05, por lo tanto no tenemos información suficiciente para rechazar  la hipótesis nula de que los residuos son homocerásticos. Esto significa que los residuos para el modelo GLM2 son homocerasticos.
 
 
 

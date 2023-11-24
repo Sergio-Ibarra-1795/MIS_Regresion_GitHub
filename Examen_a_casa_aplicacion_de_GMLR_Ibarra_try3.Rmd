@@ -1,7 +1,7 @@
 ---
-title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try2_2"
+title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try3"
 author: "SIR"
-date: "2023-11-23"
+date: "2023-11-24"
 output: html_document
 ---
 
@@ -801,26 +801,17 @@ H_1&: \text{residuals are heteroskedastic}
 \end{cases}$$
 
 
-
 ```{r}
-# Extract residuals from the model
-residuals_model_glm1 <- residuals(glm_1_wage_train_data)
+# Breusch–Pagan Test
 
-# Create a data frame including residuals and original predictors
-residual_data_model_glm1 <- data.frame(residuals = residuals_model_glm1,
-                            educ = wage_train_data$educ,
-                            exper = wage_train_data$exper,
-                            faminc = wage_train_data$faminc,
-                            female = wage_train_data$female,
-                            metro = wage_train_data$metro)
+# Obtain residuals from the gls model
+residuals_gls_1 <- residuals(glm_1_wage_train_data)
 
-# Run auxiliary regression of squared residuals on independent variables
-aux_regression_residuals_model_glm1 <- lm(residuals_model_glm1 ~ educ + exper + faminc + female + metro, data = residual_data_model_glm1)
+# Fit a linear regression model of squared residuals on the predictors
+lm_resid_sq_1 <- lm(residuals_gls_1^2 ~ wage_train_data$educ + wage_train_data$exper + wage_train_data$faminc + wage_train_data$female + wage_train_data$metro)
 
-# Perform Breusch-Pagan test using the auxiliary regression
-library(lmtest)
-
-bptest(aux_regression_residuals_model_glm1)
+# Perform the Breusch-Pagan test manually
+lmtest::bptest(lm_resid_sq_1)
 ```
 
 
@@ -832,7 +823,7 @@ En este caso el valor de (sigue siendo) p< 0.05, por lo tanto rechazamos la hip�
 
 
 ```{r}
-pacf(residuals_model_glm1)
+pacf(residuals_gls_1)
 ```
 
 
@@ -943,7 +934,8 @@ Nuestro modelo ya no contiene una constante -β0 ahora se usa para la nueva vari
 #### Weighted Least Square (WLS) para tratar temas de herocerasticidad de errores (MCO1)
 
 
-Entonces se calculan los $\log(\epsilon_i^2)$:
+Entonces se calculan los 
+$$\log(\epsilon_i^2)$$:
 
 
 ```{r}
@@ -974,15 +966,13 @@ length(log_e2)
 ```
 
 
+Y se crea el modelo lineal de los log de errores 
 
-```{r}
-head(residuals_model_mco1_dataframe)
-```
 
-```{r}
-length(residuals_model_mco1_dataframe)
-```
-
+$$\begin{aligned}
+\log(\widehat{\epsilon}^2_i) &= \alpha_0 + \alpha_1 Z_{1,i} + ... + \alpha_m Z_{m,i} + \log \left( \dfrac{\widehat{\epsilon}^2_i}{\sigma^2_i} \right)\\
+&= \alpha_0 + \alpha_1 Z_{1,i} + ... + \alpha_m Z_{m,i} + v_i
+\end{aligned}$$
 
 
 ```{r}
@@ -994,11 +984,15 @@ residual_linear_model_mco1
 ```
 
 
+
 ```{r}
 length(residual_linear_model_mco1$fitted.values)
 ```
 
 
+Y se calcula el "factor de corrección de heterocerasticidad" $\omega_i^{-1} = 1/\sqrt{\widehat{h}_i}$ 
+
+$$\widehat{h}_i = \exp\left(\widehat{\log(\epsilon_i^2)}\right)$$
 
 ```{r}
 h_est_model_mco1 <- exp(residual_linear_model_mco1$fitted.values)
@@ -1007,25 +1001,50 @@ length(h_est_model_mco1)
 
 
 
+Se arma el data frame para aplicar el "factor de corrección de heterocerasticidad" $\omega_i^{-1} = 1/\sqrt{\widehat{h}_i}$
+
+
+Es decir: 
+$$Y_i / \sqrt{\widehat{h}_i} = \beta_0 \cdot \left(1/\sqrt{\widehat{h}_i} \right) + \beta_1 \cdot \left(X_{1,i} / \sqrt{\widehat{h}_i} \right) + ... + \beta_k \cdot \left(X_{k,i} / \sqrt{\widehat{h}_i} \right) + \epsilon_i/\sqrt{\widehat{h}_i}$$
+
+Y entonces se necesita formar el data frame
+
+$$Y_i =  \ (X_{1,i}) + \ (X_{2,i}), ... \ + (X_{k,i})$$
+
 ```{r}
 
-data_mat <- data.frame(glm_1_wage_train_data$fitted, wage_train_data$educ, 
+data_mat_glm_1_wage_train_data <- data.frame(glm_1_wage_train_data$fitted, wage_train_data$educ, 
     wage_train_data$exper,  wage_train_data$faminc ,wage_train_data$female, wage_train_data$metro)
 
-head(data_mat)
+head(data_mat_glm_1_wage_train_data)
 ```
+
+Agregando el $\beta_0$
+$$Y_i = \beta_0 +  \ (X_{1,i}) + \ (X_{2,i}), ... \ + (X_{k,i})$$
 
 ```{r}
-data_weighted = data.frame(data_mat / sqrt(h_est_model_mco1), weighted_intercept = 1 / sqrt(h_est_model_mco1))
+data_weighted_glm_1_wage_train_data = data.frame(data_mat_glm_1_wage_train_data / sqrt(h_est_model_mco1), weighted_intercept = 1 / sqrt(h_est_model_mco1))
 
-head(data_weighted)
+head(data_weighted_glm_1_wage_train_data)
 ```
 
+
+
+```{r}
+dim(data_weighted_glm_1_wage_train_data)
+```
+
+
+Calculando el "factor de corrección de heterocerasticidad"
+
+$$\omega_i^{-1} = 1/\sqrt{\widehat{h}_i}$$
 
 ```{r}
 weighted_intercept = 1 / sqrt(h_est_model_mco1)
 length(weighted_intercept) 
 ```
+
+
 
 ```{r}
 weights_varFunc <- varFixed(~ 1/h_est_model_mco1)
@@ -1033,56 +1052,70 @@ weights_varFunc
 
 ```
 
+
+
 ```{r}
 weights_varFunc
 ```
 
 
 
-### Modelo MCG2 (correlacion del error 5 + tratamiento de heterocerasticidad de errores)
-
+### Modelo MCG2_2 (correlacion del error 5 + tratamiento de heterocerasticidad de errores)
 
 
 ```{r}
+# Assuming data_mat_glm_1_wage_train_data is properly constructed
+data_weighted_glm_1_wage_train_data <- data.frame(
+  fitted = data_mat_glm_1_wage_train_data[, 1],  # Assuming the first column is 'fitted'
+  educ = wage_train_data$educ,
+  exper = wage_train_data$exper,
+  faminc = wage_train_data$faminc,
+  female = wage_train_data$female,
+  metro = wage_train_data$metro
+)
+data_weighted_glm_1_wage_train_data$weighted_intercept <- 1 / sqrt(h_est_model_mco1)
 
-# Load the 'nlme' library
-library(nlme)
-
-glm_2_wage_train_data <- gls(log(wage) ~ educ + exper + faminc + female + metro, 
-               weights = weights_varFunc, 
-               correlation = corARMA(q = 5), 
-               method = "ML", 
-               data = wage_train_data)
-
-
-summary(glm_2_wage_train_data)
+# Check the structure and head of data_weighted_glm_1_wage_train_data again
+str(data_weighted_glm_1_wage_train_data)
+head(data_weighted_glm_1_wage_train_data)
 
 ```
 
 
-```{r}
 
-print(round(coef(summary(glm_2_wage_train_data)), 5))
+```{r}
+glm_2_2_wage_train_data <- gls(log(fitted) ~ educ + exper + faminc + female + metro, 
+                                weights = weights_varFunc, 
+                                correlation = corARMA(q = 5), 
+                                method = "ML", 
+                                data = data_weighted_glm_1_wage_train_data)
+
+
+summary(glm_2_2_wage_train_data)
+
 ```
 
 
 
-#### Calculando los residuos del modelo MCG2 (aplicando el escalado de matriz de varianza)
+```{r}
+
+print(round(coef(summary(glm_2_2_wage_train_data)), 5))
+```
+
+
+
+#### Calculando los residuos del modelo MCG2_2 (aplicando el escalado de matriz de varianza)
 
 
 ```{r}
-errors_mcg2 <- 1 / sqrt(h_est_model_mco1) * glm_2_wage_train_data$residuals
-head(errors_mcg2,5)
+errors_mcg2_2 <- 1 / sqrt(h_est_model_mco1) * glm_2_2_wage_train_data$residuals
+head(errors_mcg2_2,5)
 
 
 ```
 
 ```{r}
-length(errors_mcg2)
-```
-
-```{r}
-length(wage_train_data$educ)
+length(errors_mcg2_2)
 ```
 
 
@@ -1097,19 +1130,19 @@ plot(olm_model1_wage_train_data$fitted.values, olm_model1_wage_train_data$residu
 plot(wage_train_data$educ, olm_model1_wage_train_data$residuals, main = bquote("OLS Residuals vs"~X[1]))
 
 #
-plot(glm_2_wage_train_data$fitted, errors_mcg2, col = "blue", main = "WLS Residuals vs Fitted")
+plot(glm_2_2_wage_train_data$fitted, errors_mcg2_2, col = "blue", main = "WLS Residuals vs Fitted")
 
 #
-plot(wage_train_data$educ, errors_mcg2, col = "blue", main = bquote("WLS Residuals vs"~X[1]))
+plot(wage_train_data$educ, errors_mcg2_2, col = "blue", main = bquote("WLS Residuals vs"~X[1]))
 
 ```
 
 
-Observamos claramente que la magnitud de los residuos del modelo GLM2/MCG2 es menor que el MCO1.
+Observamos claramente que la magnitud de los residuos del modelo GLM2_2/MCG2_2 es menor que el MCO1.
 
 
 
-#### Test de Homocedasticidad de errores del modelo GLM2 (Test Breusch-Pagan)
+#### Test de Homocedasticidad de errores del modelo GLM2_2 (Test Breusch-Pagan)
 
 $$\begin{cases}
 H_0&: \text{residuals are homoskedastic}\\
@@ -1117,54 +1150,33 @@ H_1&: \text{residuals are heteroskedastic}
 \end{cases}$$
 
 
-
-```{r}
-# Extract residuals from the model
-residuals_model_glm2 <- glm_2_wage_train_data$residuals
-
-# Create a data frame including residuals and original predictors
-residual_data_model_glm2 <- data.frame(residuals = residuals_model_glm2,
-                            educ = wage_train_data$educ,
-                            exper = wage_train_data$exper,
-                            faminc = wage_train_data$faminc,
-                            female = wage_train_data$female,
-                            metro = wage_train_data$metro)
-
-# Run auxiliary regression of squared residuals on independent variables
-aux_regression_residuals_model_glm2 <- lm(residuals_model_glm2 ~ educ + exper + faminc + female + metro, data = residual_data_model_glm2)
-
-# Perform Breusch-Pagan test using the auxiliary regression
-library(lmtest)
-
-bptest(aux_regression_residuals_model_glm2)
-```
-
-
-
-En este caso el valor de ya es mayor a p> 0.05, por lo tanto no tenemos información suficiciente para rechazar  la hipótesis nula de que los residuos son homocerásticos. Esto significa que los residuos para el modelo GLM2 son homocerasticos.
-
-
+residuals_gls son los residuos obtenidos de su modelo gls.
+lm_resid_sq ajusta un modelo de regresión lineal donde los residuos al cuadrado se regresan a los predictores (los mismos predictores utilizados en su modelo original).
+Finalmente, se utiliza la función bptest de lmtest para realizar la prueba de Breusch-Pagan en este modelo de regresión.
 
 
 ```{r}
 
-# Load the 'nlme' library
-library(nlme)
+# Breusch–Pagan Test
 
-mdl_wls <- gls(log(wage) ~ educ + exper + faminc + female + metro, 
-               weights = weights_varFunc, 
-               correlation = corARMA(q = 5), 
-               method = "ML", 
-               data = wage_train_data)
+# Obtain residuals from the gls model
+residuals_gls_2_2 <- residuals(glm_2_2_wage_train_data)
 
+# Fit a linear regression model of squared residuals on the predictors
+lm_resid_sq_2_2 <- lm(residuals_gls_2_2^2 ~ wage_train_data$educ + wage_train_data$exper + wage_train_data$faminc + wage_train_data$female + wage_train_data$metro)
 
-print(round(coef(summary(mdl_wls)), 5))
+# Perform the Breusch-Pagan test manually
+lmtest::bptest(lm_resid_sq_2_2)
 
 ```
 
 
 
-#### Aplicación del modelo MCO1 vs MCG2
+
+
+
+#### Aplicación del modelo MCO1 vs MCG2_2 para pronóstico de wage en la data de test 
+
 
 
 

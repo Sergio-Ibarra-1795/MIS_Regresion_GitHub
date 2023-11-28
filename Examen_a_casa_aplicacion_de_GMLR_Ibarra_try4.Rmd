@@ -1,5 +1,5 @@
 ---
-title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try3"
+title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try4"
 author: "SIR"
 date: "2023-11-24"
 output: html_document
@@ -68,7 +68,7 @@ $$\begin{align}
 \end{align}$$
 
 
-##### Donde: <br>
+Donde: <br>
 Y: Vector de valores estimados <br>
 X: Matriz ampliada de valores de las variables independientes xi <br>
 $\beta$: Vector de estimadores de maxima verosimilitud calculado con el modelo MCO 
@@ -78,7 +78,7 @@ El cual asume:
 
 $$Y |X \sim \operatorname{N}(\mu(X), \sigma^2I)$$ 
 
-##### Donde: <br>
+Donde: <br>
 Y: Vector de valores estimados <br>
 X: Matriz ampliada de valores de las variables independientes xi <br>
 $\mu(X)$ is the mean of the normal distribution, which is a function of X  <br>
@@ -663,7 +663,8 @@ En general el modelo MCG asume los siguientes enunciados como ciertos:
 
  A. Las variables xi predictoras son linealmente indpendientes entre si, por lo que la matriz X es de rango completo
  B. Los errores siguen una distribución normal 
- $${\varepsilon}\sim N(\mathbf{0}, \sigma^2\mathbf{I}_n)$$
+ $${\varepsilon}\sim N(\mathbf{0}, \sigma^2\Omega)$$
+ 
  C. El valor esperado del error dado los valores de la matriz X es cero 
  $$\mathbb{E} \left( \boldsymbol{\varepsilon} | \mathbf{X}\right) = \boldsymbol{0}$$
  D. La varianza del error dado los valores de la matriz X puede calcularse como: 
@@ -737,7 +738,6 @@ $$\begin{aligned}
 Y cuya función de minimización de error o función de costo a minimizar como función de los estimadores del modelo GLS es:
 
 $$\left( \mathbf{Y} - \mathbf{X} \boldsymbol{\beta} \right)^\top \mathbf{\Omega}^{-1} \left( \mathbf{Y} - \mathbf{X} \boldsymbol{\beta} \right) \rightarrow \min_{\boldsymbol{\beta}}$$
-
 
 
 

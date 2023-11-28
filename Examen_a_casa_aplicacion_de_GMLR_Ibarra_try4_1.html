@@ -11,9 +11,9 @@
 
 <meta name="author" content="SIR" />
 
-<meta name="date" content="2023-11-24" />
+<meta name="date" content="2023-11-28" />
 
-<title>Examen_a_casa_aplicacion_de_GMLR_Ibarra_try4</title>
+<title>Examen_a_casa_aplicacion_de_GMLR_Ibarra_try4_1</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -350,9 +350,9 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Examen_a_casa_aplicacion_de_GMLR_Ibarra_try4</h1>
+<h1 class="title toc-ignore">Examen_a_casa_aplicacion_de_GMLR_Ibarra_try4_1</h1>
 <h4 class="author">SIR</h4>
-<h4 class="date">2023-11-24</h4>
+<h4 class="date">2023-11-28</h4>
 
 </div>
 
@@ -649,9 +649,9 @@ exper_i + \beta_4 faminc_i - \beta_5 female_i + \beta_6 metro_i -
 \beta_7 midwest_i - \beta_8 south_i + \varepsilon_i ;
 \\i = 1,...,N
 \end{aligned}\]</span></p>
-<div id="interpretación-un-modelo-lineal-simple-slm-o-mco-para-pronóstico-de-salario-con-base-en-datos-raciales-de-genero-y-geográficos" class="section level4">
-<h4>Interpretación un modelo lineal simple SLM o MCO para pronóstico de
-salario con base en datos raciales, de genero y geográficos</h4>
+<div id="modelo-resultante-mco1-para-pronóstico-de-salario-con-base-en-datos-raciales-de-genero-y-geográficos" class="section level4">
+<h4>Modelo resultante MCO1 para pronóstico de salario con base en datos
+raciales, de genero y geográficos</h4>
 <p>Empezemos específicando el modelo resultante de aplicar el MCO a la
 data de wage como función de las (9-1) variables predictoras xi que
 componen el dataset original.</p>
@@ -794,9 +794,9 @@ wage_i &amp;= \beta_0 - \beta_1 educ_i + \beta_2 exper_i + \beta_3
 faminc_i - \beta_4 female_i + \beta_5 metro_i + \varepsilon_i  
 \\i = 1,...,N
 \end{aligned}\]</span></p>
-<div id="interpretación-un-modelo-lineal-simple-slm-o-mco2-para-pronóstico-de-salario-con-base-en-datos-raciales-de-genero-y-geográficos" class="section level4">
-<h4>Interpretación un modelo lineal simple SLM o MCO2 para pronóstico de
-salario con base en datos raciales, de genero y geográficos</h4>
+<div id="modelo-resultante-mco2-para-pronóstico-de-salario-con-base-en-datos-raciales-de-genero-y-geográficos" class="section level4">
+<h4>Modelo resultante MCO2 para pronóstico de salario con base en datos
+raciales, de genero y geográficos</h4>
 <p>Empezemos específicando el modelo resultante de aplicar el MCO2 a la
 data de wage fomo función de las 5 variables predicoras xi que
 resultaron significativas.</p>
@@ -814,10 +814,10 @@ resultaron significativas.</p>
 <ul>
 <li>El valor del coeficiente del intercepto <span class="math inline">\(\beta_0\)</span> disminuyó ~1.8 menos que el valor
 del <span class="math inline">\(\beta_0\)</span> del MCO1. Esto podria
-se el resultado de que el nuevo <span class="math inline">\(\beta_0\)</span> considerará las vriables no
+se el resultado de que el nuevo <span class="math inline">\(\beta_0\)</span> considerará las variables no
 significativas en el modelo MCO1 (black, midwest &amp; south) pero que
 en general disminuían el valor del wage</li>
-<li>Todos los demas coeficientes del modelo MOC2 se mantivueron
+<li>Todos los demas coeficientes del modelo MOC2 se mantuvieron
 prácticamente iguales al valor dado en el MCO1</li>
 </ul>
 </div>
@@ -852,11 +852,51 @@ H_1&amp;: \beta_{j} \neq 0, \quad \text{for some } j
 videncia para rechazar la HO y por lo tanto decir que los coeficientes
 <span class="math inline">\(\beta\)</span> del modelo MCO2 son
 diferentes de cero</p>
+<div id="los-supuestos-de-gauss-markov-sobre-el-error-en-los-modelos-lineales" class="section level5">
+<h5>Los supuestos de GAUSS-MARKOV sobre el error en los modelos
+lineales</h5>
+<p><br></p>
+<p>En general en los modelos lineales se asumen los siguientes
+enunciados como ciertos:</p>
+<p>A. Las variables xi predictoras son linealmente indpendientes entre
+si, por lo que la matriz X es de rango completo <br> B. Los errores
+siguen una distribución normal</p>
+<p><span class="math display">\[{\varepsilon}\sim N(\mathbf{0},
+\sigma^2\Omega)\]</span></p>
+<p>C. El valor esperado del error dado los valores de la matriz X es
+cero <span class="math display">\[\mathbb{E} \left(
+\boldsymbol{\varepsilon} | \mathbf{X}\right) = \boldsymbol{0}\]</span>
+D. La varianza del error dado los valores de la matriz X puede
+calcularse como:</p>
+<p><span class="math display">\[\mathbb{V}{\rm ar}\left(
+\boldsymbol{\varepsilon} | \mathbf{X} \right)= \mathbb{E} \left(
+\boldsymbol{\varepsilon} \boldsymbol{\varepsilon}^\top
+\right)\]</span></p>
+<p>es decir,</p>
+<p><span class="math display">\[ \mathbb{V}{\rm ar}\left(
+\boldsymbol{\varepsilon} | \mathbf{X} \right) = \mathbb{E} \left(
+\boldsymbol{\varepsilon} \boldsymbol{\varepsilon}^\top \right)=
+\boldsymbol{\Sigma} = \sigma_\epsilon^2 \mathbf{\Omega}\]</span></p>
+<p>Donde <span class="math inline">\({\Omega}\)</span> es una matriz
+cuadrada, simétrica y definida positiva de tamaño N × N. Este modelo
+permite que los errores sean heterocedásticos o autocorrelacionados (o
+ambos) y a menudo se denomina caso especial del modelo lineal
+generalizado (GLM).</p>
+<p>Si <span class="math inline">\({\Omega}=I\)</span>, entonces el GMLR
+es simplemente el modelo MCO que hemos estado discutiendo al
+momento.</p>
+<p><span class="math display">\[ {\Omega}= \begin{pmatrix}
+1 &amp; 0 &amp; 0 &amp; ..  0\\
+0 &amp;  1&amp; 0 &amp; ..  0\\
+0 &amp;  0&amp; 1 &amp; ..  0\\
+0 &amp; 0 &amp; 0 &amp;  ..  1
+\end{pmatrix}\]</span></p>
 </div>
 </div>
-<div id="evaluación-de-los-error-del-modelo-mco2-verificación-de-pruebas-de-hipotesis-de-mco" class="section level3">
-<h3>Evaluación de los error del modelo MCO2 (verificación de pruebas de
-hipotesis de MCO)</h3>
+</div>
+<div id="evaluación-de-los-error-del-modelo-mco2-verificación-de-supuestos-de-gauss-markov" class="section level3">
+<h3>Evaluación de los error del modelo MCO2 (verificación de supuestos
+de GAUSS-MARKOV)</h3>
 <p>Una vez teniendo el modelo MCO2 en el que todas las variables
 predcitoras xi son significativas se procederá a hacer las diferentes
 pruebas de hipitesis al error generado con el modelo MCO2 aplicado a los
@@ -999,9 +1039,9 @@ log(wage_i) &amp;= \beta_0 - \beta_1 educ_i + \beta_2 exper_i + \beta_3
 faminc_i - \beta_4 female_i + \beta_5 metro_i + \varepsilon_i  
 \\i = 1,...,N
 \end{aligned}\]</span></p>
-<div id="interpretación-un-modelo-lineal-simple-slm-o-mco2-para-pronóstico-de-salario-con-base-en-datos-raciales-de-genero-y-geográficos-1" class="section level4">
-<h4>Interpretación un modelo lineal simple SLM o MCO2 para pronóstico de
-salario con base en datos raciales, de genero y geográficos</h4>
+<div id="modelo-resultante-mco3-para-pronóstico-de-salario-con-base-en-datos-raciales-de-genero-y-geográficos" class="section level4">
+<h4>Modelo resultante MCO3 para pronóstico de salario con base en datos
+raciales, de genero y geográficos</h4>
 <p>Empezemos específicando el modelo resultante de aplicar el MCO3 a la
 data de log(wage) como función de las 5 variables predictoras xi que
 resultaron significativas.</p>
@@ -1016,6 +1056,9 @@ resultaron significativas.</p>
 <p><span class="math display">\[log(wage_i) = 1.27 + 0.11*educ_i +
 0.008*exper_i + 0.000007*faminc_i - 0.22*female_i + 0.13*metro_i +
 \varepsilon_i   \]</span></p>
+<p>Se observa que: El valor de los coeficiente se ajusto a la escala
+logaritmica Los errores aparentan estar más cercanos y centrados
+alrededor del cero</p>
 </div>
 <div id="prueba-de-hipotesis-global-para-el-modelo-mco3" class="section level4">
 <h4>Prueba de hipotesis global para el modelo MCO3</h4>
@@ -1124,7 +1167,8 @@ Esto significa que los residuos son heterocedásticos.</p>
 de autocorrelación en ninguno de los casos (excepto quizá para el error
 a lag 5)</p>
 <p>A partir de estos resultados de la prueba, podemos concluir que los
-residuos no están autocorrelacionados</p>
+residuos no están autocorrelacionados (a excepción de la pequeña
+correlación que parece haber en el error a t-5)</p>
 </div>
 </div>
 <div id="modelo-mco4-removiendo-las-variables-que-no-resultaron-significatrivas-en-el-mco1-original-que-incluía-todas-las-variables-predictoras-xi-del-conjunto-de-datos-como-variables-predictoras-logaritmo-de-variable-dependiente-wage-como-medida-para-lograr-normalidad-en-error-agregando-la-variable-educfemale-para-evaluar-el-efecto-de-un-aó-de-edicación-dado-que-se-es-female" class="section level3">
@@ -1174,41 +1218,9 @@ summary(olm_model4_wage_train_data)</code></pre>
 <p>Se observa como agregar la variable female<em>educ no mejoró el R^2
 ajustado además de que a un nivel de significancia <span class="math inline">\(\alpha = 0.05\)</span> la variable female</em>educ
 resulta NO ser significativa.</p>
-<div id="el-modelo-general-lineal-glr-o-modelo-de-mínimos-cuadrados-mcg-generalizados" class="section level4">
-<h4>El modelo General Lineal (GLR) o Modelo de Mínimos Cuadrados (MCG)
-GeneralizadoS</h4>
-<p><br></p>
-<p>En general el modelo MCG asume los siguientes enunciados como
-ciertos:</p>
-<p>A. Las variables xi predictoras son linealmente indpendientes entre
-si, por lo que la matriz X es de rango completo B. Los errores siguen
-una distribución normal <span class="math display">\[{\varepsilon}\sim
-N(\mathbf{0}, \sigma^2\mathbf{I}_n)\]</span> C. El valor esperado del
-error dado los valores de la matriz X es cero <span class="math display">\[\mathbb{E} \left( \boldsymbol{\varepsilon} |
-\mathbf{X}\right) = \boldsymbol{0}\]</span> D. La varianza del error
-dado los valores de la matriz X puede calcularse como:</p>
-<p><span class="math display">\[\mathbb{V}{\rm ar}\left(
-\boldsymbol{\varepsilon} | \mathbf{X} \right)= \mathbb{E} \left(
-\boldsymbol{\varepsilon} \boldsymbol{\varepsilon}^\top \right)\]</span>
-es decir,</p>
-<p><span class="math display">\[ \mathbb{V}{\rm ar}\left(
-\boldsymbol{\varepsilon} | \mathbf{X} \right) = \mathbb{E} \left(
-\boldsymbol{\varepsilon} \boldsymbol{\varepsilon}^\top \right)=
-\boldsymbol{\Sigma} = \sigma_\epsilon^2 \mathbf{\Omega}\]</span></p>
-<p>Donde <span class="math inline">\({\Omega}\)</span> es una matriz
-cuadrada, simétrica y definida positiva de tamaño N × N. Este modelo
-permite que los errores sean heterocedásticos o autocorrelacionados (o
-ambos) y a menudo se denomina caso especial del modelo lineal
-generalizado (GLM).</p>
-<p>Si <span class="math inline">\({\Omega}=I\)</span>, entonces el GMLR
-es simplemente el modelo de regresión lineal múltiple simple que
-discutimos al comienzo de este capítulo.</p>
-<p><span class="math display">\[ {\Omega}= \begin{pmatrix}
-1 &amp; 0 &amp; 0 &amp; ..  0\\
-0 &amp;  1&amp; 0 &amp; ..  0\\
-0 &amp;  0&amp; 1 &amp; ..  0\\
-0 &amp; 0 &amp; 0 &amp;  ..  1
-\end{pmatrix}\]</span></p>
+<div id="el-modelo-general-lineal-gls-o-modelo-de-mínimos-cuadrados-generalizados-mcg" class="section level4">
+<h4>El modelo General Lineal (GLS) o Modelo de Mínimos Cuadrados
+Generalizados (MCG)</h4>
 <div id="los-supuestos-de-gauss-markov-en-el-modelo-general-lineal-glr-o-modelo-de-mínimos-cuadrados-mcg-generalizados" class="section level5">
 <h5>Los supuestos de GAUSS-MARKOV en el modelo General Lineal (GLR) o
 Modelo de Mínimos Cuadrados (MCG) GeneralizadoS</h5>
@@ -1288,7 +1300,7 @@ minimizar como función de los estimadores del modelo GLS es:</p>
 \min_{\boldsymbol{\beta}}\]</span></p>
 </div>
 <div id="coeficientes-beta_gls-del-modelo-mcg" class="section level5">
-<h5>Coeficientes <span class="math inline">\(\beta_{GLS}\)</span> del
+<h5>Coeficientes <span class="math inline">\({\beta}_{GLS}\)</span> del
 Modelo MCG</h5>
 <p>Y cuyos coeficientes son calculados con base en los datos de la
 muestra de la siguiente manera:</p>
@@ -1405,6 +1417,14 @@ H_1&amp;: \beta_{j} \neq 0, \quad \text{for some } j
 videncia para rechazar la HO y por lo tanto decir que los coeficientes
 <span class="math inline">\(\beta\)</span> del modelo MCG1 son
 diferentes de cero</p>
+</div>
+<div id="modelo-resultante-mcg1-para-pronóstico-de-salario-con-base-en-datos-raciales-de-genero-y-geográficos" class="section level4">
+<h4>Modelo resultante MCG1 para pronóstico de salario con base en datos
+raciales, de genero y geográficos</h4>
+<p><span class="math display">\[log(wage_i) = 1.24 + 0.11*educ_i +
+0.008*exper_i + 0.000001*faminc_i - 0.22*female_i + 0.14*metro_i
+-0.052*\theta_1 + 0.045*\theta_2 +0.032*\theta_3 -0.063*\theta_4
+-0.068*\theta_5    + \varepsilon_i   \]</span></p>
 </div>
 <div id="test-de-normalidad-de-los-errores-del-modelo-glm1-test-jarque-bera" class="section level4">
 <h4>Test de Normalidad de los errores del modelo GLM1 (Test
@@ -1790,6 +1810,16 @@ summary(glm_2_2_wage_train_data)</code></pre>
 ## faminc       0.00000   0.00000   80.39604       0
 ## female      -0.06837   0.00055 -125.41585       0
 ## metro        0.04518   0.00085   53.45647       0</code></pre>
+<p>Se observa claramente como se tiene el menor error estandar en los
+errores comparado con el MGG1 y el MCO3</p>
+<div id="modelo-resultante-mcg2-para-pronóstico-de-salario-con-base-en-datos-raciales-de-genero-y-geográficos" class="section level4">
+<h4>Modelo resultante MCG2 para pronóstico de salario con base en datos
+raciales, de genero y geográficos</h4>
+<p><span class="math display">\[log(wage_i) = 0.54 + 0.033*educ_i +
+0.0025*exper_i + 0.0000003*faminc_i - 0.068*female_i + 0.045*metro_i
+-0.030*\theta_1 + 0.043*\theta_2 +0.0021*\theta_3 -0.0037*\theta_4
+-0.009*\theta_5    + \varepsilon_i   \]</span></p>
+</div>
 <div id="calculando-los-residuos-del-modelo-mcg2_2-aplicando-el-escalado-de-matriz-de-varianza" class="section level4">
 <h4>Calculando los residuos del modelo MCG2_2 (aplicando el escalado de
 matriz de varianza)</h4>

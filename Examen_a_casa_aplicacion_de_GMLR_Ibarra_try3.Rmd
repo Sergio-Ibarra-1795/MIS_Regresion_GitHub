@@ -18,6 +18,88 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <br>
 
+#### El modelo General Lineal (GLR) o Modelo de Mínimos Cuadrados (MCG) GeneralizadoS 
+<br>
+
+En general el modelo MCG asume los siguientes enunciados como ciertos:
+
+ A. Las variables xi predictoras son linealmente indpendientes entre si, por lo que la matriz X es de rango completo
+ B. Los errores siguen una distribución normal 
+ $${\varepsilon}\sim N(\mathbf{0}, \sigma^2\mathbf{I}_n)$$
+ C. El valor esperado del error dado los valores de la matriz X es cero 
+ $$\mathbb{E} \left( \boldsymbol{\varepsilon} | \mathbf{X}\right) = \boldsymbol{0}$$
+ D. La varianza del error dado los valores de la matriz X puede calcularse como: 
+ 
+ 
+ 
+ 
+ $$\mathbb{V}{\rm ar}\left( \boldsymbol{\varepsilon} | \mathbf{X} \right)= \mathbb{E} \left( \boldsymbol{\varepsilon} \boldsymbol{\varepsilon}^\top \right)$$
+ es decir, 
+ 
+$$ \mathbb{V}{\rm ar}\left( \boldsymbol{\varepsilon} | \mathbf{X} \right) = \mathbb{E} \left( \boldsymbol{\varepsilon} \boldsymbol{\varepsilon}^\top \right)= \boldsymbol{\Sigma} = \sigma_\epsilon^2 \mathbf{\Omega}$$
+
+
+Donde ${\Omega}$ es una matriz cuadrada, simétrica y definida positiva de tamaño N × N. Este modelo permite que los errores sean heterocedásticos o autocorrelacionados (o ambos) y a menudo se denomina caso especial del modelo lineal generalizado (GLM).
+
+
+
+Si ${\Omega}=I$, entonces el GMLR es simplemente el modelo de regresión lineal múltiple simple que discutimos al comienzo de este capítulo.
+
+
+$$ {\Omega}= \begin{pmatrix}
+1 & 0 & 0 & ..  0\\ 
+0 &  1& 0 & ..  0\\
+0 &  0& 1 & ..  0\\ 
+0 & 0 & 0 &  ..  1 
+\end{pmatrix}$$ 
+
+
+Si ${\Omega}$ es diagonal con elementos diagonales no constantes, entonces los términos de error no están correlacionados pero son heterocedásticos.
+
+
+$${\Omega}= \begin{pmatrix}
+\omega_{1}  & 0 & 0 & ..  0\\ 
+0 &  \omega_{2}& 0 & ..  0\\
+0 &  0& \omega_{3} & ..  0\\ 
+0 & 0 & 0 &  ..  \omega_{n} 
+\end{pmatrix}$$
+
+
+Si ${\Omega}$ no es diagonal, entonces $Cov(\varepsilon_{i}, \varepsilon_{j})={\Omega_{ij}\neq 0}$ En econometría, las matrices de covarianza no diagonales se encuentran con mayor frecuencia en los datos de series temporales, con correlaciones más altas para las observaciones más cercanas en el tiempo (generalmente cuando i y j difieren en 1 o 2).
+
+
+Si ${\Omega}$ no es diagonal y los elementos diagonales son constantes, entonces los errores están autocorrelacionados y homocedásticos.
+
+$${\Omega}= \begin{pmatrix}
+\sigma^{2}  & \rho_{12} & \rho_{13} & ..\rho_{1N}\\ 
+\rho_{21}  &  \sigma^{2}& \rho_{23}  & ..\rho_{2N} \\
+\rho_{31}  &  \rho_{32} & \sigma^{2} & ..\rho_{3N} \\ 
+\rho_{41}  &  \rho_{42}  & \rho_{43}  &  ..\sigma^{2} 
+\end{pmatrix}$$
+
+
+
+Si ${\Omega}$ no es diagonal y los elementos diagonales no son constantes, entonces los errores están autocorrelacionados y heterocedásticos.
+
+
+$${\Omega}= \begin{pmatrix}
+\omega_{1}  & \rho_{12} & \rho_{13} & ..\rho_{1N}\\ 
+\rho_{21}  &  \omega_{2}& \rho_{23}  & ..\rho_{2N} \\
+\rho_{31}  &  \rho_{32} & \omega_{3} & ..\rho_{3N} \\ 
+\rho_{41}  &  \rho_{42}  & \rho_{43}  &  ..\omega_{N} 
+\end{pmatrix}$$
+
+
+Y donde los estimadores ${\beta}$ del modelo lineal genralizado (GLS o MCG) puede ser calculado como : 
+
+$$\begin{aligned}
+\widehat{\boldsymbol{\beta}_{GLS}} = \left( \mathbf{X}^\top \mathbf{\Omega}^{-1}  \mathbf{X}\right)^{-1} \mathbf{X}^\top \mathbf{\Omega}^{-1}  \mathbf{Y}
+\end{aligned}$$
+
+Y cuya función de minimización de error o función de costo a minimizar como función de los estimadores del modelo GLS es:
+
+$$\left( \mathbf{Y} - \mathbf{X} \boldsymbol{\beta} \right)^\top \mathbf{\Omega}^{-1} \left( \mathbf{Y} - \mathbf{X} \boldsymbol{\beta} \right) \rightarrow \min_{\boldsymbol{\beta}}$$
+
 
 <br>
 
@@ -653,92 +735,6 @@ summary(olm_model4_wage_train_data)
 
 Se observa como agregar la variable female*educ no mejoró el R^2 ajustado además de que a un nivel de significancia $\alpha = 0.05$ la variable 
 female*educ resulta NO ser significativa.
-
-
-
-#### El modelo General Lineal (GLR) o Modelo de Mínimos Cuadrados (MCG) GeneralizadoS 
-<br>
-
-En general el modelo MCG asume los siguientes enunciados como ciertos:
-
- A. Las variables xi predictoras son linealmente indpendientes entre si, por lo que la matriz X es de rango completo
- B. Los errores siguen una distribución normal 
- $${\varepsilon}\sim N(\mathbf{0}, \sigma^2\mathbf{I}_n)$$
- C. El valor esperado del error dado los valores de la matriz X es cero 
- $$\mathbb{E} \left( \boldsymbol{\varepsilon} | \mathbf{X}\right) = \boldsymbol{0}$$
- D. La varianza del error dado los valores de la matriz X puede calcularse como: 
- 
- 
- 
- 
- $$\mathbb{V}{\rm ar}\left( \boldsymbol{\varepsilon} | \mathbf{X} \right)= \mathbb{E} \left( \boldsymbol{\varepsilon} \boldsymbol{\varepsilon}^\top \right)$$
- es decir, 
- 
-$$ \mathbb{V}{\rm ar}\left( \boldsymbol{\varepsilon} | \mathbf{X} \right) = \mathbb{E} \left( \boldsymbol{\varepsilon} \boldsymbol{\varepsilon}^\top \right)= \boldsymbol{\Sigma} = \sigma_\epsilon^2 \mathbf{\Omega}$$
-
-
-Donde ${\Omega}$ es una matriz cuadrada, simétrica y definida positiva de tamaño N × N. Este modelo permite que los errores sean heterocedásticos o autocorrelacionados (o ambos) y a menudo se denomina caso especial del modelo lineal generalizado (GLM).
-
-
-
-Si ${\Omega}=I$, entonces el GMLR es simplemente el modelo de regresión lineal múltiple simple que discutimos al comienzo de este capítulo.
-
-
-$$ {\Omega}= \begin{pmatrix}
-1 & 0 & 0 & ..  0\\ 
-0 &  1& 0 & ..  0\\
-0 &  0& 1 & ..  0\\ 
-0 & 0 & 0 &  ..  1 
-\end{pmatrix}$$ 
-
-
-Si ${\Omega}$ es diagonal con elementos diagonales no constantes, entonces los términos de error no están correlacionados pero son heterocedásticos.
-
-
-$${\Omega}= \begin{pmatrix}
-\omega_{1}  & 0 & 0 & ..  0\\ 
-0 &  \omega_{2}& 0 & ..  0\\
-0 &  0& \omega_{3} & ..  0\\ 
-0 & 0 & 0 &  ..  \omega_{n} 
-\end{pmatrix}$$
-
-
-Si ${\Omega}$ no es diagonal, entonces $Cov(\varepsilon_{i}, \varepsilon_{j})={\Omega_{ij}\neq 0}$ En econometría, las matrices de covarianza no diagonales se encuentran con mayor frecuencia en los datos de series temporales, con correlaciones más altas para las observaciones más cercanas en el tiempo (generalmente cuando i y j difieren en 1 o 2).
-
-
-Si ${\Omega}$ no es diagonal y los elementos diagonales son constantes, entonces los errores están autocorrelacionados y homocedásticos.
-
-$${\Omega}= \begin{pmatrix}
-\sigma^{2}  & \rho_{12} & \rho_{13} & ..\rho_{1N}\\ 
-\rho_{21}  &  \sigma^{2}& \rho_{23}  & ..\rho_{2N} \\
-\rho_{31}  &  \rho_{32} & \sigma^{2} & ..\rho_{3N} \\ 
-\rho_{41}  &  \rho_{42}  & \rho_{43}  &  ..\sigma^{2} 
-\end{pmatrix}$$
-
-
-
-Si ${\Omega}$ no es diagonal y los elementos diagonales no son constantes, entonces los errores están autocorrelacionados y heterocedásticos.
-
-
-$${\Omega}= \begin{pmatrix}
-\omega_{1}  & \rho_{12} & \rho_{13} & ..\rho_{1N}\\ 
-\rho_{21}  &  \omega_{2}& \rho_{23}  & ..\rho_{2N} \\
-\rho_{31}  &  \rho_{32} & \omega_{3} & ..\rho_{3N} \\ 
-\rho_{41}  &  \rho_{42}  & \rho_{43}  &  ..\omega_{N} 
-\end{pmatrix}$$
-
-
-Y donde los estimadores ${\beta}$ del modelo lineal genralizado (GLS o MCG) puede ser calculado como : 
-
-$$\begin{aligned}
-\widehat{\boldsymbol{\beta}_{GLS}} = \left( \mathbf{X}^\top \mathbf{\Omega}^{-1}  \mathbf{X}\right)^{-1} \mathbf{X}^\top \mathbf{\Omega}^{-1}  \mathbf{Y}
-\end{aligned}$$
-
-Y cuya función de minimización de error o función de costo a minimizar como función de los estimadores del modelo GLS es:
-
-$$\left( \mathbf{Y} - \mathbf{X} \boldsymbol{\beta} \right)^\top \mathbf{\Omega}^{-1} \left( \mathbf{Y} - \mathbf{X} \boldsymbol{\beta} \right) \rightarrow \min_{\boldsymbol{\beta}}$$
-
-
 
 
 

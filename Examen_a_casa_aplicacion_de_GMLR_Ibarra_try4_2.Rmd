@@ -1,5 +1,5 @@
 ---
-title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try4_1"
+title: "Examen_a_casa_aplicacion_de_GMLR_Ibarra_try4_2"
 author: "SIR"
 date: "2023-11-28"
 output: html_document
@@ -49,12 +49,11 @@ Y  por lo tanto:
 $$E(Y |X) = \mu(X) = \mathbf{X}^\top\boldsymbol{\beta}$$
 
 
-##### Coeficientes $\beta}}_{OLS}$ del Modelo MCO
+##### Coeficientes ${\beta}_{OLS}$ del Modelo MCO
 
 Y cuyos coeficientes son calculados con base en los datos de la muestra de la siguiente manera:
 
 $$\widehat{\boldsymbol{\beta}}_{OLS} = \left( \mathbf{X}^\top \mathbf{X}\right)^{-1} \mathbf{X}^\top \mathbf{Y}$$
-
 
 
 <br>
@@ -905,7 +904,7 @@ plot(wage_train_data$educ, glm_1_wage_train_data$residuals, col = "blue", main =
 
 
 
-#### Test de Normalidad de los errores del modelo GLM1 (Test Jarque-Bera)
+#### Test de Normalidad de los errores del modelo MCG1 (Test Jarque-Bera)
 
 $$\begin{cases}
 H_0&:\text{residuals follow a normal distribution}\\
@@ -1212,8 +1211,8 @@ head(data_weighted_glm_1_wage_train_data)
 
 ```{r}
 glm_2_2_wage_train_data <- gls(log(fitted) ~ educ + exper + faminc + female + metro, 
-                                weights = weights_varFunc, 
-                                correlation = corARMA(q = 5), 
+                                weights = weights_varFunc,
+                                corARMA(p = 5),
                                 method = "ML", 
                                 data = data_weighted_glm_1_wage_train_data)
 
@@ -1258,17 +1257,22 @@ length(errors_mcg2_2)
 par(mfrow = c(2, 2))
 
 #
-plot(olm_model1_wage_train_data$fitted.values, olm_model1_wage_train_data$residuals, main = "OLS Residuals vs Fitted")
+plot(glm_1_wage_train_data$fitted, glm_1_wage_train_data$residuals, col = "blue", main = "MCG1 Residuals vs Fitted")
 
 #
-plot(wage_train_data$educ, olm_model1_wage_train_data$residuals, main = bquote("OLS Residuals vs"~X[1]))
+plot(wage_train_data$educ, glm_1_wage_train_data$residuals, col = "blue", main = bquote("MCG1 Residuals vs"~X[1]))
 
 #
-plot(glm_2_2_wage_train_data$fitted, errors_mcg2_2, col = "blue", main = "WLS Residuals vs Fitted")
+plot(glm_2_2_wage_train_data$fitted, glm_2_2_wage_train_data$residuals, col = "blue", main = "MCG2 Residuals vs Fitted")
 
 #
-plot(wage_train_data$educ, errors_mcg2_2, col = "blue", main = bquote("WLS Residuals vs"~X[1]))
+plot(wage_train_data$educ, glm_2_2_wage_train_data$residuals, col = "blue", main = bquote("MCG2 Residuals vs"~X[1]))
 
+```
+
+
+```{r}
+hist(glm_2_2_wage_train_data$residuals)
 ```
 
 
@@ -1276,7 +1280,24 @@ Observamos claramente que la magnitud de los residuos del modelo GLM2_2/MCG2_2 e
 
 
 
-#### Test de Homocedasticidad de errores del modelo GLM2_2 (Test Breusch-Pagan)
+
+#### Test de Normalidad de los errores del modelo MCG2 (Test Jarque-Bera)
+
+$$\begin{cases}
+H_0&:\text{residuals follow a normal distribution}\\
+H_1&:\text{residuals do not follow a normal distribution}
+\end{cases}$$
+
+
+```{r}
+ tseries::jarque.bera.test(glm_2_2_wage_train_data$residuals)
+```
+No se tiene evidencia suficiente para rechazar la hipotesis nula del test JB por lo que se puede decir que los errores del modelo MCG1 siguen una distribución normal
+
+
+
+
+#### Test de Homocedasticidad de errores del modelo MCG2_2 (Test Breusch-Pagan)
 
 $$\begin{cases}
 H_0&: \text{residuals are homoskedastic}\\

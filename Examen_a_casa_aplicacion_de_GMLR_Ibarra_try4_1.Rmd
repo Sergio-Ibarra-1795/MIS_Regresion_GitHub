@@ -711,10 +711,11 @@ female*educ resulta NO ser significativa.
 
 
 
-#### El modelo General Lineal (GLS) o Modelo de Mínimos Cuadrados Generalizados (MCG)
+### El modelo General Lineal (GLS) o Modelo de Mínimos Cuadrados Generalizados (MCG)
 
 
-##### Los supuestos de GAUSS-MARKOV en  el modelo General Lineal (GLR) o Modelo de Mínimos Cuadrados (MCG) GeneralizadoS 
+##### Los supuestos de GAUSS-MARKOV en  el modelo General Lineal (GLR) o Modelo de Mínimos Cuadrados (MCG) Generalizados
+
 <br>
 
 En general el modelo MCG asume los siguientes enunciados como ciertos:
@@ -805,9 +806,9 @@ $$\begin{aligned}
 
 
 
-##### Propiedades de los coeficientes $\beta}}_{OLS}$ del Modelo Lineal 
+##### Propiedades de los coeficientes ${\beta}_{GLS}$ del Modelo Minimos Cuadrados Generalizados (MCG)
 
-Y si se cumplen las condiciones de GAUSS-MARKOV entonces se dice que los coeficientes  $\beta}}_{GLS}$ son: 
+Y si se cumplen las condiciones de GAUSS-MARKOV entonces se dice que los coeficientes  ${\beta}_{GLS}$ son: 
 
 - Insesgados: El valor esperado es igual al parámetro que está estimando
 

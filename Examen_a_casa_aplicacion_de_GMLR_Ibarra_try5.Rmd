@@ -407,6 +407,27 @@ Esto podria se el resultado de que el nuevo  $\beta_0$ considerará las variable
 - Todos los demas coeficientes del modelo MOC2 se mantuvieron prácticamente iguales al valor dado en el MCO1
 
 
+#### Valores de los estimadores $\beta$ del modelo MCO2 a 90 y 95% de confianza
+
+
+
+```{r}
+# Get coefficients and confidence intervals
+coef_summary_lm_model2_wage_train_data <- summary(olm_model2_wage_train_data)$coefficients[, c("Estimate", "Std. Error")]
+conf_intervals_lm_model2_wage_train_data <- confint(olm_model2_wage_train_data)
+
+# Combine coefficients and confidence intervals
+coef_summary_lm_model2_wage_train_data <- cbind(coef_summary_lm_model2_wage_train_data, conf_intervals_lm_model2_wage_train_data)
+
+# Plot coefficients with confidence intervals
+coefplot::coefplot(olm_model2_wage_train_data, coef.summary = coef_summary_lm_model2_wage_train_data, 
+                   main = "Coefficients and Confidence Intervals")
+
+```
+
+
+
+
 
 
 #### Prueba de hipotesis global para el modelo MCO2
@@ -611,6 +632,25 @@ $$log(wage_i) = 1.27 + 0.11*educ_i + 0.008*exper_i + 0.000007*faminc_i - 0.22*fe
 Se observa que:
 El valor de los  coeficiente se ajusto a la escala logaritmica
 Los errores aparentan estar más cercanos y centrados alrededor del cero
+
+
+#### Valores de los estimadores $\beta$ del modelo MCO3 a 90 y 95% de confianza
+
+
+
+```{r}
+# Get coefficients and confidence intervals
+coef_summary_lm_model3_wage_train_data <- summary(olm_model3_wage_train_data)$coefficients[, c("Estimate", "Std. Error")]
+conf_intervals_lm_model3_wage_train_data <- confint(olm_model3_wage_train_data)
+
+# Combine coefficients and confidence intervals
+coef_summary_lm_model3_wage_train_data <- cbind(coef_summary_lm_model3_wage_train_data, conf_intervals_lm_model3_wage_train_data)
+
+# Plot coefficients with confidence intervals
+coefplot::coefplot(olm_model3_wage_train_data, coef.summary = coef_summary_lm_model3_wage_train_data, 
+                   main = "Coefficients and Confidence Intervals")
+
+```
 
 
 
@@ -912,19 +952,19 @@ coef_summary_glm_1_wage_train_data
 library(ggplot2)
 
 # Extract relevant information for plotting
-coefficients <- coef_summary_glm_1_wage_train_data$Value
-lower_bound <- coef_summary_glm_1_wage_train_data$"2.5 %"
-upper_bound <- coef_summary_glm_1_wage_train_data$"97.5 %"
+variables <- rownames(coef_summary_glm_1_wage_train_data)
+coefficients_glm_1_wage_train_data <- coef_summary_glm_1_wage_train_data$Value
+lower_bound_glm_1_wage_train_data <- coef_summary_glm_1_wage_train_data$"2.5 %"
+upper_bound_glm_1_wage_train_data <- coef_summary_glm_1_wage_train_data$"97.5 %"
 
 # Create a dataframe for plotting
-plot_data <- data.frame(Coefficient = coefficients, Lower = lower_bound, Upper = upper_bound)
+plot_data <- data.frame(Variable = variables, Coefficient = coefficients_glm_1_wage_train_data, Lower = lower_bound_glm_1_wage_train_data, Upper = upper_bound_glm_1_wage_train_data)
 
 # Plot coefficients with confidence intervals for GLS model using ggplot2
-ggplot(plot_data, aes(y = Coefficient, x = 1)) +
+ggplot(plot_data, aes(y = Variable, x = Coefficient)) +
   geom_point() +
   geom_errorbarh(aes(xmin = Lower, xmax = Upper), height = 0.2) +
-  labs(title = "GLS Model Coefficients and Confidence Intervals", x = "", y = "Coefficient")
-
+  labs(title = "GLS glm_1_wage_train_data Model Coefficients and Confidence Intervals", x = "Coefficient", y = "Variable")
 
 
 ```
@@ -1312,6 +1352,55 @@ Se observa claramente como se tiene el menor error estandar en los errores compa
 $$log(wage_i) = 0.54 + 0.033*educ_i + 0.0025*exper_i + 0.0000003*faminc_i - 0.068*female_i + 0.045*metro_i -0.030*\theta_1 + 0.043*\theta_2 +0.0021*\theta_3 -0.0037*\theta_4 -0.009*\theta_5    + \varepsilon_i   $$
 
 
+#### Valores de los estimadores $\beta$ del modelo MCG2 a 90 y 95% de confianza
+
+
+
+
+```{r}
+# Load necessary packages
+library(nlme)
+
+# Get coefficients and confidence intervals for GLS model
+coef_summary_glm_2_2_wage_train_data <- as.data.frame(coef(summary(glm_2_2_wage_train_data)))
+conf_intervals_glm_2_2_wage_train_data <- confint(glm_2_2_wage_train_data)
+
+# Combine coefficients and confidence intervals
+coef_summary_glm_2_2_wage_train_data <- cbind(coef_summary_glm_2_2_wage_train_data, conf_intervals_glm_2_2_wage_train_data)
+
+# Print coefficients and confidence intervals
+print(coef_summary_glm_2_2_wage_train_data)
+
+```
+
+```{r}
+coef_summary_glm_2_2_wage_train_data <- as.data.frame(coef_summary_glm_2_2_wage_train_data)
+coef_summary_glm_2_2_wage_train_data
+```
+
+
+```{r}
+library(ggplot2)
+
+# Extract relevant information for plotting
+variables <- rownames(coef_summary_glm_1_wage_train_data)
+coefficients_glm_2_2_wage_train_data <- coef_summary_glm_2_2_wage_train_data$Value
+lower_bound_glm_2_2_wage_train_data <- coef_summary_glm_2_2_wage_train_data$"2.5 %"
+upper_bound_glm_2_2_wage_train_data <- coef_summary_glm_2_2_wage_train_data$"97.5 %"
+
+# Create a dataframe for plotting
+plot_data <- data.frame(Variable = variables, Coefficient = coefficients_glm_2_2_wage_train_data, Lower = lower_bound_glm_2_2_wage_train_data, Upper = upper_bound_glm_2_2_wage_train_data)
+
+# Plot coefficients with confidence intervals for GLS model using ggplot2
+ggplot(plot_data, aes(y = Variable, x = Coefficient)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = Lower, xmax = Upper), height = 0.2) +
+  labs(title = "GLS glm_2_2_wage_train_data Model Coefficients and Confidence Intervals", x = "Coefficient", y = "Variable")
+
+
+```
+
+
 #### Calculando los residuos del modelo MCG2_2 (aplicando el escalado de matriz de varianza)
 
 
@@ -1319,8 +1408,8 @@ $$log(wage_i) = 0.54 + 0.033*educ_i + 0.0025*exper_i + 0.0000003*faminc_i - 0.06
 errors_mcg2_2 <- 1 / sqrt(h_est_model_mco1) * glm_2_2_wage_train_data$residuals
 head(errors_mcg2_2,5)
 
-
 ```
+
 
 ```{r}
 length(errors_mcg2_2)
@@ -1422,12 +1511,54 @@ MAPE_wage_predicted_olm_model1
 ```
 
 
+```{r}
+# Combine original test data with predicted values
+combined_data_wage_predicted_olm_model1 <- cbind(wage_test_data, Predicted_Wage = wage_predicted_olm_model1)
+
+# View the combined dataframe
+head(combined_data_wage_predicted_olm_model1)
+
+tail(combined_data_wage_predicted_olm_model1)
+```
+
+
+
+#### Aplicación de modelo MCO3
+
+```{r}
+# Predict wages using the test data
+log_wage_predicted_olm_model3 <- predict(olm_model3_wage_train_data, newdata = wage_test_data)
+
+wage_predicted_olm_model3<-exp(log_wage_predicted_olm_model3)
+
+# Calculate Mean Absolute Percentage Error (MAPE)
+MAPE_wage_predicted_olm_model3 <- mean(abs((wage_predicted_olm_model3 - wage_test_data$wage) / wage_test_data$wage)) * 100
+
+MAPE_wage_predicted_olm_model3
+
+```
+
+
+```{r}
+# Combine original test data with predicted values
+combined_data_wage_predicted_olm_model3 <- cbind(wage_test_data, Predicted_Wage = wage_predicted_olm_model3)
+
+# View the combined dataframe
+head(combined_data_wage_predicted_olm_model3)
+
+tail(combined_data_wage_predicted_olm_model3)
+```
+
+
 
 #### Aplicación de modelo MCG1
 
 ```{r}
 # Predict wages using the test data
-wage_predicted_glm_1 <- predict(glm_1_wage_train_data, newdata = wage_test_data)
+log_wage_predicted_glm_1<- predict(glm_1_wage_train_data, newdata = wage_test_data)
+
+# Back-transform the predicted log wages to the original scale
+wage_predicted_glm_1 <- exp(log_wage_predicted_glm_1)
 
 # Calculate Mean Absolute Percentage Error (MAPE)
 MAPE_Wage_predicted_glm_1 <- mean(abs((wage_predicted_glm_1 - wage_test_data$wage) / wage_test_data$wage)) * 100
@@ -1435,6 +1566,52 @@ MAPE_Wage_predicted_glm_1 <- mean(abs((wage_predicted_glm_1 - wage_test_data$wag
 MAPE_Wage_predicted_glm_1
 
 ```
+
+
+
+
+```{r}
+# Combine original test data with predicted values
+combined_data_wage_predicted_glm_1 <- cbind(wage_test_data, Predicted_Wage = wage_predicted_glm_1)
+
+# View the combined dataframe
+head(combined_data_wage_predicted_glm_1)
+
+tail(combined_data_wage_predicted_glm_1)
+```
+
+
+
+
+
+#### Aplicación de modelo MCG2
+
+```{r}
+# Predict wages using the test data
+log_wage_predicted_glm_2_2<- predict(glm_2_2_wage_train_data, newdata = wage_test_data)
+
+# Back-transform the predicted log wages to the original scale
+wage_predicted_glm_2_2 <- exp(log_wage_predicted_glm_2_2)
+
+# Calculate Mean Absolute Percentage Error (MAPE)
+MAPE_wage_predicted_glm_2_2 <- mean(abs((wage_predicted_glm_2_2 - wage_test_data$wage) / wage_test_data$wage)) * 100
+
+MAPE_wage_predicted_glm_2_2
+
+```
+
+
+
+```{r}
+# Combine original test data with predicted values
+combined_data_wage_predicted_glm_2_2 <- cbind(wage_test_data, Predicted_Wage = wage_predicted_glm_2_2)
+
+# View the combined dataframe
+head(combined_data_wage_predicted_glm_2_2)
+
+tail(combined_data_wage_predicted_glm_2_2)
+```
+
 
 
 

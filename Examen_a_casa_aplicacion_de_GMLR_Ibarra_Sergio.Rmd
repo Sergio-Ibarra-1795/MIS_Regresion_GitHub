@@ -1632,6 +1632,46 @@ tail(combined_data_wage_predicted_glm_2_2)
 ```
 
 
+Si tuviera que isar un modelo para pronósticar el wage como función de las variables presentadas usaria el MCO3 ó el MCG1  (requiere más capacidad computacional) dependiendo de la capacidad computacional con la que se cuente, teniendo un MAPE de aproximadamente 37% y un R'2 de alrededor de 0.48 
+
+
+
+
+### Conclusiones Generales 
+
+Los modelos lineales de MCO permitieron modelar a los datos de wage como función de variables sociodemográficas con un R^2 ajustado de 0.33 y teniendo un MAPE de 33% en el pronóstico de un set de test <br>
+
+ <br>
+
+Los  errores en los modelos MCO para el pronóstico de wage como función de variables sociodemográficas tiende a tener un comportamiento heterocedastico y no normal, así como presentar ligeras correlaciones  <br>
+
+
+ <br>
+
+Tras realizar transformación en la variable dependiente como Log(y) se logró corregir la no normalidad en los errores 
+
+ <br>
+
+
+Al aplicar el MCG y tomar en cuenta la heterocedasticidas y posible correlación de error se logró mejorar el R^2 ajustado y llevar los errores casi a cero. Además reduce el error estandar igualmente casi a cero 
+
+
+ <br>
+
+Los modelos lineales de MCG permitieron modelar a los datos de wage como función de variables sociodemográficas con un R^2 ajustado de 0.49 y teniendo un MAPE de 27% en el pronóstico de un set de test
+
+
+```{r}
+#install.packages("jpeg")
+
+library(jpeg)
+
+image <- read.jpeg("Regresion_examen_a_casa_resumen_resultados_modelos.png")
+
+plot(image, width=600)
+
+```
+
 
 
 ## Bibliografía 
@@ -1651,26 +1691,30 @@ https://gente.itam.mx/lnieto/index_archivos/NotasRA4.pdf
 ### PAQUETES USADOS DE R
 
 lmtest:
-
 Zeileis, A., & Hothorn, T. (2002). Diagnostic checking in regression relationships. R News, 2(3), 7-10.
 Reference: https://cran.r-project.org/web/packages/lmtest/citation.html
-lrmest:
 
+<br>
+
+lrmest:
 Heinze, G. (2006). A comparative investigation of methods for logistic regression with separated or nearly separated data. Statistics in Medicine, 25(24), 4216-4226.
 Reference: https://cran.r-project.org/web/packages/lrmest/citation.html
 stats (base R package):
 
 R Core Team (2022). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria.
 Reference: https://www.R-project.org/
+<br>
+
 coefplot:
-
 Lüdecke, D. (2021). sjPlot: Data Visualization for Statistics in Social Science. https://cran.r-project.org/web/packages/sjPlot/citation.html
-nlme:
 
+<br>
+nlme:
 Pinheiro, J., Bates, D., DebRoy, S., Sarkar, D., & R Core Team (2021). nlme: Linear and Nonlinear Mixed Effects Models. R package version 3.1-154.
 Reference: https://cran.r-project.org/web/packages/nlme/citation.html
-ggplot2:
 
+<br>
+ggplot2:
 Wickham, H. (2016). ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York.
 Reference: https://ggplot2.tidyverse.org/
 

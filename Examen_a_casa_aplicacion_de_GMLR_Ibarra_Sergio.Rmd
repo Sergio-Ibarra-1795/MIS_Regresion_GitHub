@@ -1639,7 +1639,7 @@ Si tuviera que isar un modelo para pronósticar el wage como función de las var
 
 ### Conclusiones Generales 
 
-Los modelos lineales de MCO permitieron modelar a los datos de wage como función de variables sociodemográficas con un R^2 ajustado de 0.33 y teniendo un MAPE de 33% en el pronóstico de un set de test <br>
+Los modelos lineales de MCO permitieron modelar a los datos de wage como función de variables sociodemográficas con un R^2 ajustado de 0.38 y teniendo un MAPE de 37% en el pronóstico de un set de test <br>
 
  <br>
 
@@ -1658,17 +1658,21 @@ Al aplicar el MCG y tomar en cuenta la heterocedasticidas y posible correlación
 
  <br>
 
-Los modelos lineales de MCG permitieron modelar a los datos de wage como función de variables sociodemográficas con un R^2 ajustado de 0.49 y teniendo un MAPE de 27% en el pronóstico de un set de test
+Los modelos lineales de MCG permitieron modelar a los datos de wage como función de variables sociodemográficas con un R^2 ajustado de 0.49 y teniendo un MAPE de 37% en el pronóstico de un set de test
 
+
+#### Resumen de los resultados de los modelos MCO y MCG probados en el presente trabajo  
 
 ```{r}
-#install.packages("jpeg")
 
-library(jpeg)
+#install.packages("png") 
+library(png)
 
-image <- read.jpeg("Regresion_examen_a_casa_resumen_resultados_modelos.png")
+image <- readPNG("Regresion_examen_a_casa_resumen_resultados_modelos.png")
 
-plot(image, width=600)
+plot(1:2, type='n', xlim=c(0, 1), ylim=c(0, 1))
+rasterImage(image, 0, 0, 1, 1)
+
 
 ```
 
